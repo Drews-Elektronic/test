@@ -5,7 +5,7 @@ export const environment = {
     mplUrl: '/mpl',
     apiUrl: '80.147.63.148:8080/mpl/php/controller.php',
 
-    keycloak_deaktivieren: true, // Nicht als true setzen
+    keycloak_deaktivieren: false, // Nicht als true setzen
     // Wenn MyProtoLab bereit für den Kunden ist, soll diese Funktion entfernt werden.
     // Dazu einfach STRG + Click auf die Variable 'keycloak_deaktivieren' und alle aufgezeigten Bereiche anpassen
 
