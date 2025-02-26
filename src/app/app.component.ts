@@ -1,13 +1,29 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, isDevMode } from '@angular/core';
+import { filter, take, tap } from 'rxjs';
+
+import { MatDialog } from '@angular/material/dialog';
+
+import { FehlermeldungdialogComponent } from './views/.children/.fehlermeldung/fehlermeldungdialog/fehlermeldungdialog.component';
+import { MitteilungService } from './services/mitteilung.service';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
+  selector: 'mpl-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'test';
+  einblenden: boolean = true
+
+  constructor(
+    private mitteilung: MitteilungService
+  ) {}
+
+  ngOnInit(){
+    if(isDevMode()){
+      console.log("Development!")
+    } else {
+      console.log('Production!')
+    }
+  }
 }
+

@@ -1,0 +1,99 @@
+<h6>
+  @if(name){
+    @if(baugruppen || neuer_auftrag){
+      <span class="text clickable" (click)="zurueck_baugruppen()">
+        My Baugruppen: 
+      </span>
+      <!--
+      &#10140;
+      -->
+      <span class="text">
+        {{ name }}
+      </span>
+    }@else if (auftraege || auftrag_fortfahren) {
+      <span class="text clickable" (click)="zurueck_auftraege()">
+        My Auftrag:
+      </span>
+      <!--
+      &#10140;
+      -->
+      <span class="text">
+        Nr. {{ name }}
+      </span>
+    }@else if (bestellung) {
+      <span class="text clickable" (click)="zurueck_bestellungen()">
+        My Bestellungen:
+      </span>
+      <!--
+      &#10140;
+      -->
+      <span class="text clickable">
+        {{ name }}
+      </span>
+    }@else if (import_zeile_anlegen) {
+      <span class="text clickable" (click)="zurueck_import()">
+        My Bom hochladen
+      </span>
+    }@else if (kundenbauteil_anlegen) {
+      <span class="text clickable" (click)="zurueck_kundenbauteil()">
+        My Bauteile
+      </span>
+    }@else {
+      Error:
+      <!--
+      &#10140;
+      -->
+      <span class="text clickable">
+        {{ name }}
+      </span>
+    }
+  }
+  
+  @for (navi of navigation; track $index) {
+    <!--
+    @if($index !== 0 || name !== undefined){
+      &#10140;
+    }
+    -->
+    @if($index === position) {
+      <span class="derzeitige_position align-self-center">
+        @if(nummerierung){
+          <span class="badge rounded-pill text-bg-secondary ">
+            {{ $index +1 }}
+          </span>
+        }@else {
+          | 
+        }
+        <span class="text clickable">
+          {{ navi }}
+        </span>
+      </span>
+    }@else if($index < position || alle_nav_anwendbar){
+      <span class="clickable align-self-center" (click)="umleitung($index)">
+        @if(nummerierung){
+          <span class="badge rounded-pill text-bg-secondary ">
+            {{ $index +1 }}
+          </span>
+        }@else {
+          | 
+        }
+        <span class="text clickable">
+          {{ navi }}
+        </span>
+      </span>
+    }@else if($index > position) {
+      <span class="transparent align-self-center">
+        @if(nummerierung){
+          <span class="badge rounded-pill text-bg-secondary ">
+            {{ $index +1 }}
+          </span>
+        }@else {
+          | 
+        }
+        <span class="text clickable">
+          {{ navi }}
+        </span>
+      </span>
+    }
+  }
+</h6>

@@ -1,0 +1,166 @@
+<br>
+
+<div class="container-xl">
+    <div class="header">
+        <mpl-formular-header CurrentTitle="Neuen Auftrag anlegen" [einruecken]="true">
+        </mpl-formular-header>
+
+        <mpl-ladebalken [lade_status]="100"></mpl-ladebalken>
+    </div>
+
+    <br>
+
+    <form #projektForm="ngForm" (ngSubmit)="ProjektAnlegen()">
+        <div class="container-xxl box-anpassen">
+            <div class="row">
+                <label
+                    for="aunr"
+                    class="form-label col-2 transparent"
+                    >Angebots Nr.</label
+                >
+                <div class="col-2 transparent">
+                    <input
+                        id="aunr"
+                        name="aunr"
+                        type="text"
+                        class="form-control form-select-sm kompakter-50 align-right"
+                        disabled
+                    />
+                </div>
+
+                <label
+                    for="auftragsart"
+                    class="form-label col-2 align-right"
+                    >Angebotsart</label>
+                <div class="col-2">
+                    <select
+                        id="auftragsart"
+                        name="auftragsart"
+                        class="form-select form-select-sm"
+                        [ngModel]="auftrag && auftrag.auftragsart" (ngModelChange)="auftrag && (auftrag.auftragsart = $event)"
+                    >
+                        <option *ngFor="let x of kbauftragsart" [value]="x.value" [selected]="x.selected"> {{x.name}} </option>
+                    </select>
+                </div>
+                
+
+                <label
+                    for="wunschtermin"
+                    class="form-label col-2 align-right"
+                    >Wunschtermin</label>
+                <div class="col-2">
+                    <select
+                        id="wunschtermin"
+                        name="wunschtermin"
+                        class="form-select form-select-sm"
+                        [ngModel]="auftrag && auftrag.wunschtermin" (ngModelChange)="auftrag && (auftrag.wunschtermin = $event)"
+                    >
+                        <option *ngFor="let x of kbwunschtermin" [value]="x.value" [selected]="x.selected"> {{x.name}} </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <label
+                    for="baugruppen"
+                    class="form-label col-2"
+                    >Baugruppe</label
+                >
+                <div class="col-2">
+                    <select
+                        id="baugruppen"
+                        name="baugruppen"
+                        class="form-select form-select-sm"
+                        [ngModel]="auftrag && auftrag.baugruppe.bgnr" (ngModelChange)="auftrag && (auftrag.baugruppe.bgnr = $event)"
+                        (change)="setBGNRKD($event)"
+                    >
+                        <option *ngFor="let x of baugruppen" [value]="x.bgnr" > {{ x.bgnrkd }} </option>
+                    </select>
+                </div>
+
+                <label
+                    for="slpositionen"
+                    class="form-label col-2 align-right transparent"
+                    >SL-Pos</label>
+                <div class="col-2 align-right transparent" [style.text-align]="'right'">
+                    <input
+                        id="slpositionen"
+                        name="slpositionen"
+                        type="text"
+                        class="form-control form-select-sm kompakter-50 align-right"
+                        [(ngModel)]="slpositionen"
+                        disabled
+                    />
+                </div>
+
+                <label
+                    for="auftragsmenge"
+                    class="form-label col-2 align-right"
+                    >Menge</label>
+                <div class="col-2 align-right">
+                    <input
+                        id="auftragsmenge"
+                        name="auftragsmenge"
+                        type="text"
+                        class="form-control form-select-sm kompakter-50 align-right"
+                        [ngModel]="auftrag && auftrag.auftragsmenge" (ngModelChange)="auftrag && (auftrag.auftragsmenge = $event)"
+                    />    
+                </div>
+            </div>
+
+            <div class="row">
+                <label
+                    for="bgbezeichnungkd"
+                    class="form-label col-2 transparent"
+                    >Bezeichnung</label
+                >
+                <div class="col transparent">
+                    <input
+                        id="bgbezeichnungkd"
+                        name="bgbezeichnungkd"
+                        type="text"
+                        class="form-control form-select-sm"
+                        [ngModel]="auftrag && auftrag.baugruppe.bgbezeichnungkd" (ngModelChange)="auftrag && (auftrag.baugruppe.bgbezeichnungkd = $event)"
+                        disabled
+                    />
+                </div>
+            </div>
+            
+            <div class="row">
+                <label
+                    for="aubemerkungkd"
+                    class="form-label col-2"
+                    >Bemerkung</label>
+                <div class="col">
+                    <input
+                        id="aubemerkungkd"
+                        name="aubemerkungkd"
+                        type="text"
+                        class="form-control form-select-sm"
+                        [ngModel]="auftrag && auftrag.aubemerkungkd" (ngModelChange)="auftrag && (auftrag.aubemerkungkd = $event)"
+                    />
+                </div>
+            </div>
+
+            <div class="row m-2 align-items-center">
+                <button
+                    type="button"
+                    class="btn btn-secondary col-2"
+                    (click)="zurueck()"
+                >
+                    Abbrechen
+                </button>
+
+                <div class="col"></div>
+
+                <button 
+                    type="submit" 
+                    class="btn btn-success col-2"
+                >
+                    Anlegen
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+    

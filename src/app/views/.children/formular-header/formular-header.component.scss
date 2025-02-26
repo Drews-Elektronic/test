@@ -1,0 +1,7 @@
+.mitteilungs-box{
+    position: fixed;
+    top: 17%;
+    width: 98.7%;
+    left: calc(var(--bs-gutter-x) * 0.5);
+    z-index: 10 !important;  
+}

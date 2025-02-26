@@ -1,0 +1,126 @@
+<div class="container margin-top">
+    <div class="row">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <mpl-action-button name="neues Projekt" (click)="Umleitung_nach_neues_projekt()">
+                <img class="img-breite-anpassen" src="assets/svg/angular_material_icon.docs_add_on.svg" />
+            </mpl-action-button>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <mpl-action-button name="Material Suche" (click)="Umleitung_nach_bauteil_suche()">
+                <img class="img-breite-anpassen" src="assets/svg/angular_material_icon.search.svg" />
+            </mpl-action-button>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <mpl-action-button name="BOM import" (click)="Umleitung_nach_import()">
+                <img class="img-breite-anpassen" src="assets/svg/angular_material_icon.upload_file.svg" />
+            </mpl-action-button>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <mpl-action-button name="Zahlungs-methoden">
+                <img class="img-breite-anpassen" src="assets/svg/angular_material_icon.euro_symbol.svg" />
+            </mpl-action-button>
+        </div>
+
+        <div class="w-100"></div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <mpl-action-button name="Bauteile" (click)="Umleitung_nach_kundenbauteil()">
+                <img class="img-breite-anpassen" src="assets/svg/transistor.svg" />
+            </mpl-action-button>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <mpl-action-button name="Baugruppen" (click)="Umleitung_nach_baugruppen()">
+                <img class="img-breite-anpassen" src="assets/svg/baugruppen.svg" />
+            </mpl-action-button>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <mpl-action-button name="Angebote" (click)="Umleitung_nach_auftraege()">
+                <img class="img-breite-anpassen" src="assets/svg/auftraege.svg" />
+            </mpl-action-button>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <mpl-action-button name="Bestellungen" (click)="Umleitung_nach_bestellungen()">
+                <img class="img-breite-anpassen" src="assets/svg/angular_material_icon.handshake.svg" />
+            </mpl-action-button>
+        </div>
+
+        
+    </div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+
+@if(!production){
+    <div class="container-xl">
+        <div class="row">
+    
+            <div class="col">
+                Letzte Änderung Angular: {{ getLetzteAenderung_angular }}
+                <br>
+                Letzte Änderung PHP: {{ getLetzteAenderung_php }}
+    
+                @if(bereit 
+                && !(produktion_frontend || produktion_backend) 
+                && kundenNrAuswaehlenAktiv){
+                    <br>
+                    <div>
+                        <label 
+                            for="agbskd" 
+                            class="form-label"
+                            >Kundennr.</label
+                        >
+                        &nbsp;
+                        <select
+                            id="agbskd"
+                            name="agbskd"
+                            type="text"
+                            style="width: 100px;"
+                            [(ngModel)]="kdnr"
+                            (change)="changeKunde()"
+                        >
+                            <option *ngFor="let x of array_kdnr" [value]="x.kdnr"> {{x.kdnr}} </option>
+                            <!-- [selected]="x?.standard" rausgenommen, durch [selected] wird der Wert der Variable im dropdown als default value verwende -->
+                        </select>
+                    </div>
+                }
+            </div>
+            <div class="col">
+                @if(produktion_frontend == true){
+                    Frontend-Modus: Produktion
+                }@else if (produktion_frontend == false) {
+                    Frontend-Modus: Development
+                }@else {
+                    Frontend-Modus: Fehler
+                }
+    
+                <br>
+    
+                @if(bereit){
+                    @if(produktion_backend == true){
+                        Backend-Modus: Produktion
+                    }@else if(produktion_backend == false){
+                        Backend-Modus: Development
+                    }@else {
+                        Backend-Modus: Fehler
+                    }
+                }@else {
+                    Backend-Modus: Bitte warten
+                }
+            </div>
+            
+        </div>
+    </div>
+}
+
+
+
+

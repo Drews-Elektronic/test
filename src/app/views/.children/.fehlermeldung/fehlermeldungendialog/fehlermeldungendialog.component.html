@@ -1,0 +1,39 @@
+
+<span
+  class="row"
+  cdkDrag
+  cdkDragRootElement=".cdk-overlay-pane" 
+  cdkDragHandle
+  style="padding-right: 5px;"
+>
+  <h6 mat-dialog-title 
+      class="col padding_bottom_0"
+      *ngIf="!title">
+    Fehlermeldungen
+  </h6>
+  <h6 mat-dialog-title 
+      class="col padding_bottom_0"
+      *ngIf="title">
+    Fehlermeldungen aus {{ data.title }}
+  </h6>
+  
+  <div class="col-2 button_center_end">
+    <button class="btn btn-secondary padding_bottom_0"  mat-dialog-close cdkFocusInitial>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</span>
+
+<mat-dialog-content class="mat-typography padding_10 max_height">
+  <table mat-table [dataSource]="dataSource">
+    @for(colum of columns; track displayedColumns){
+      <ng-container [matColumnDef]="colum?.['id']">
+        <th mat-header-cell *matHeaderCellDef> {{ colum?.['label'] }}  </th>
+        <td mat-cell *matCellDef="let element"> {{ element?.[ colum?.['id'] ] }} </td>
+      </ng-container>
+    } 
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="verkuerzen table-header"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="verkuerzen"></tr>
+  </table>
+</mat-dialog-content>

@@ -1,0 +1,561 @@
+<div class="container-xl">
+    <h3> Import Bauteil anlegen </h3>
+
+    <!--
+    @if(neues_projekt){
+        <mpl-navigation [neues_projekt]="true" [position]="1"
+        ></mpl-navigation>
+    }@else {
+        <mpl-navigation [import_zeile_anlegen]="true" [position]="0"
+        ></mpl-navigation>
+    }
+    -->
+    
+    <mpl-ladebalken [falsches_laden_beginnen]="lade_status_AlternativeAngebenImport" [lade_status]="100"></mpl-ladebalken>
+
+    <div class="container-xxl box-anpassen">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="radiobutton_pos" id="bt_erstellen" [value]="1" [(ngModel)]="radiobutton_pos" checked>
+            <label class="form-check-label" for="bt_erstellen">
+                Bauteil erstellen
+            </label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="radiobutton_pos" id="bestehende_bauteile" [value]="2" [(ngModel)]="radiobutton_pos">
+            <label class="form-check-label" for="bestehende_bauteile">
+                Bestehende Bauteile suchen
+            </label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="radiobutton_pos" id="globale_bauteile" [value]="3" [(ngModel)]="radiobutton_pos">
+            <label class="form-check-label" for="globale_bauteile">
+                Globale Bauteile suchen
+            </label>
+        </div>
+
+        <br>
+        <br>
+
+
+        <div [ngClass]="{'verstecken': radiobutton_pos !== 1}">
+            <form 
+                #bauteileform="ngForm" 
+                [formGroup]="formGroup"
+                (ngSubmit)="ImportBauteilAnlegen()"
+            >
+                <h5 style="display: flex; justify-content: space-between;">
+                    <div style="display: inline-block; align-self: flex-end;"> Bauteildaten </div> 
+                </h5>
+
+                <div class="row">
+                    <label
+                        for="btnrkd"
+                        class="form-label col-3"
+                        >Bauteilnummer</label
+                    >
+                    <div class="col">
+                        <input
+                            id="btnrkd"
+                            name="btnrkd"
+                            type="text"
+                            class="form-control form-select-sm"
+                            formControlName="btnrkd"
+                        />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label
+                        for="btbeschreibungkd"
+                        class="form-label col-3"
+                        >Bauteilbeschreibung</label
+                    >
+                    <div class="col">
+                        <input
+                            id="btbeschreibungkd"
+                            name="btbeschreibungkd"
+                            type="text"
+                            class="form-control form-select-sm"
+                            formControlName="btbeschreibungkd"
+                            
+                            [class.invalid]="this.formGroup.get('btbeschreibungkd')?.errors"
+                            [matTooltip]="
+                                formGroup.get('btbeschreibungkd')?.errors?.['required'] && fehlermeldung?.[50702] || 
+                                formGroup.get('btbeschreibungkd')?.errors?.['etwas anderes'] && fehlermeldung?.['etwas anderes']
+                            "
+                        />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label
+                        for="htnrkd"
+                        class="form-label col-3"
+                        >Hersteller-Teile Nr. </label
+                    >
+                    <div class="col">
+                        <input
+                            id="htnrkd"
+                            name="htnrkd"
+                            type="text"
+                            class="form-control form-select-sm"
+                            formControlName="htnrkd"
+                            [class.invalid]="this.formGroup.get('htnrkd')?.errors"
+                            [matTooltip]="
+                                formGroup.get('htnrkd')?.errors?.['required'] && fehlermeldung?.[50703] || 
+                                formGroup.get('htnrkd')?.errors?.['etwas anderes'] && fehlermeldung?.['etwas anderes']
+                            "
+                        />
+                    </div>
+
+                    <label 
+                        for="agbtkd" 
+                        class="form-label col-3 align-right"
+                        >Bauteilart</label
+                    >
+                    <div class="col">
+                        <select
+                            id="agbtkd"
+                            name="agbtkd"
+                            type="text"
+                            class="form-select form-select-sm"
+                            formControlName="agbtkd"
+                        >
+                            <option *ngFor="let x of agbtkd" [value]="x.value"> {{x.name}} </option>
+                            <!-- [selected]="x?.standard" rausgenommen, durch [selected] wird der Wert der Variable im dropdown als default value verwende -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label
+                        for="htnhkd"
+                        class="form-label col-3"
+                        >Hersteller</label
+                    >
+                    <div class="col">
+                        <input
+                            id="htnhkd"
+                            name="htnhkd"
+                            type="text"
+                            class="form-control form-select-sm"
+                            formControlName="htnhkd"
+                        />
+                    </div>
+
+                    <label 
+                        for="agbskd" 
+                        class="form-label col-3 align-right"
+                        >Beistellung</label
+                    >
+                    <div class="col">
+                        <select
+                            id="agbskd"
+                            name="agbskd"
+                            type="text"
+                            class="form-select form-select-sm"
+                            formControlName="agbskd"
+                        >
+                            <option *ngFor="let x of agbskd" [value]="x.value"> {{x.name}} </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label
+                        for="SuchLieferant"
+                        class="form-label col-3"
+                        >Suche Lieferant</label
+                    >
+                    <div class="col">
+                        <select
+                            id="SuchLieferant"
+                            name="SuchLieferant"
+                            class="form-select form-select-sm"
+                            formControlName="linr"
+                            (change)="lieferant_change($event)"
+                        >
+                            <option [value]="undefined" selected>  </option>
+                            <option *ngFor="let x of linamekd" [value]="x['LINR']"> {{x.LieferantKurz}} </option>
+                        </select>
+                    </div>
+
+                    <label 
+                        for="aglakd" 
+                        class="form-label col-3 align-right"
+                        >Lief.B.Auswahl</label
+                    >
+                    <div class="col">
+                        <select
+                            id="aglakd"
+                            name="aglakd"
+                            class="form-select form-select-sm"
+                            formControlName="aglakd"
+                        >
+                            <option *ngFor="let x of aglakd" [value]="x.value"> {{x.name}} </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label 
+                        for="btnrlikd" 
+                        class="form-label col-3"
+                        >Lieferanten-Teile Nr.</label
+                    >
+                    <div class="col">
+                        <input
+                            id="btnrlikd"
+                            name="btnrlikd"
+                            class="form-control form-select-sm"
+                            formControlName="btnrlikd"
+                            [class.invalid]="this.formGroup.get('btnrlikd')?.errors"
+                            [matTooltip]="
+                                formGroup.get('btnrlikd')?.errors?.['required'] && fehlermeldung?.[50706] || 
+                                formGroup.get('btnrlikd')?.errors?.['etwas anderes'] && fehlermeldung?.['etwas anderes']
+                            "
+                        >
+                    </div>
+
+                    <label 
+                        for="aghakd" 
+                        class="form-label col-3 align-right"
+                        >Herst.Auswahl</label
+                    >
+                    <div class="col">
+                        <select
+                            id="aghakd"
+                            name="aghakd"
+                            class="form-select form-select-sm"
+                            formControlName="aghakd"
+                        >
+                            <option *ngFor="let x of aghakd" [value]="x.value"> {{x.name}} </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label 
+                        for="linamekd" 
+                        class="form-label col-3"
+                        >Lieferant</label
+                    >
+                    <div class="col">
+                        <input
+                            id="linamekd"
+                            name="linamekd"
+                            class="form-control form-select-sm"
+                            formControlName="linamekd"
+                            [class.invalid]="this.formGroup.get('linamekd')?.errors"
+                            [matTooltip]="
+                                formGroup.get('linamekd')?.errors?.['required'] && fehlermeldung?.[50705] || 
+                                formGroup.get('linamekd')?.errors?.['etwas anderes'] && fehlermeldung?.['etwas anderes']
+                            "
+                        >
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label
+                        for="anlagezeitpunkt"
+                        class="form-label col-3 transparent"
+                        >Anlagezeitpunkt</label
+                    >
+                    <div class="col">
+                        <input
+                            id="anlagezeitpunkt"
+                            name="anlagezeitpunkt"
+                            type="text"
+                            class="form-control form-select-sm transparent"
+                            disabled
+                        />
+                    </div>
+
+                    <label
+                        for="LetzteAenderung"
+                        class="form-label col-3 align-right transparent"
+                        >Letzte Änderung</label
+                    >
+                    <div class="col">
+                        <input
+                            id="LetzteAenderung"
+                            name="LetzteAenderung"
+                            type="text"
+                            class="form-control form-select-sm transparent"
+                            disabled
+                        />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label
+                        for="btbemerkungkd"
+                        class="form-label col-3"
+                        >Bauteil-Bemerkungen</label
+                    >
+                    <div class="col">
+                        <input
+                            id="btbemerkungkd"
+                            name="btbemerkungkd"
+                            type="text"
+                            class="form-control form-select-sm"
+                            formControlName="btbemerkungkd"
+                        />
+                    </div>
+                </div>
+
+                <hr>
+                <h5>BOM-Daten</h5>
+
+                <div class="row">
+                    <label
+                        for="bompos"
+                        class="form-label col-3"
+                        >POS</label
+                    >
+                    <div class="col">
+                        <input
+                            id="bompos"
+                            name="bompos"
+                            type="text"
+                            class="form-control form-select-sm kompakter-50 align-right"
+                            formControlName="bompos"
+                        />
+                    </div>
+                    
+                    <div class="col-3 align-right">
+                        <label
+                            for="anzprobg"
+                            class="form-label"
+                            >Anzahl pro BG</label
+                        >
+                    </div>
+                    
+                    <div class="col">
+                        <input
+                            id="anzprobg"
+                            name="anzprobg"
+                            class="form-control form-select-sm kompakter-50 align-right"
+                            formControlName="anzprobg"
+                            [class.invalid]="this.formGroup.get('anzprobg')?.errors"
+                            [matTooltip]="
+                                formGroup.get('anzprobg')?.errors?.['required'] && fehlermeldung?.[50709] || 
+                                formGroup.get('anzprobg')?.errors?.['etwas anderes'] && fehlermeldung?.['etwas anderes']
+                            "
+                        />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-3">
+                        <label
+                            for="elbezkomp"
+                            class="form-label"
+                            style="text-align: right;"
+                            >Elektrische Bezeichnung</label
+                        >
+                    </div>
+
+                    <div class="col">
+                        <input
+                            id="elbez"
+                            name="elbez"
+                            type="text"
+                            class="form-control form-select-sm"
+                            formControlName="elbez"
+                            [class.invalid]="this.formGroup.get('elbez')?.errors"
+                            [matTooltip]="
+                                formGroup.get('elbez')?.errors?.['required'] && fehlermeldung?.[50710] || 
+                                formGroup.get('elbez')?.errors?.['etwas anderes'] && fehlermeldung?.['etwas anderes']
+                            "
+                        />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label 
+                        class="col-3"
+                        for="slbemerkungkd" 
+                        class="form-label col-3"
+                        >BOM-Bemerkung</label
+                    >
+                    <div class="col">
+                        <input
+                            id="slbemerkungkd"
+                            name="slbemerkungkd"
+                            type="text"
+                            class="form-control form-select-sm"
+                            formControlName="slbemerkungkd"
+                        />
+                    </div>
+                    
+                </div>
+            </form>
+        </div>
+        <div [ngClass]="{'verstecken': radiobutton_pos !== 2}">
+            @if(!bereit_bestehende_bt) {
+                <div style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 25vh;
+                    ">
+                        <mat-spinner></mat-spinner>
+                </div>
+            }@else{
+                <!-- Suchfelder -->
+                <!--
+                <div class="row" style="gap: 7px; margin-right: 0">
+                    <label
+                    for="filterAll"
+                    class="form-label col-1"
+                    >Suchen</label
+                    >
+                    <div class="col-2">
+                    <input
+                        name="filterAll"
+                        type="text"
+                        class="form-control form-select-sm"
+                        (keyup)="applyFilter_bestehende_bt($event)"
+                    />
+                    </div>
+                </div>
+                -->
+
+                <!-- Tabelle für die bestehenden Bauteil auswahl -->
+                <table mat-table
+                    [dataSource]="bestehende_bauteile" matSort multiTemplateDataRows
+                >
+                    <!-- Spalten -->
+                    <ng-container matColumnDef="btnrkd">
+                        <th mat-header-cell *matHeaderCellDef> Bauteil Nr. </th>
+                        <td mat-cell *matCellDef="let element"> {{element["btnrkd"]}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="btbeschreibungkd">
+                        <th mat-header-cell *matHeaderCellDef> Bauteilbeschreibung </th>
+                        <td mat-cell *matCellDef="let element"> {{element["btbeschreibungkd"]}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="htnrkd">
+                        <th mat-header-cell *matHeaderCellDef> Hersteller-Teile Nr. </th>
+                        <td mat-cell *matCellDef="let element"> {{element["htnrkd"]}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="htnhkd">
+                        <th mat-header-cell *matHeaderCellDef> Hersteller </th>
+                        <td mat-cell *matCellDef="let element"> {{element["htnhkd"]}} </td>
+                    </ng-container>
+                    
+                    <ng-container matColumnDef="btnrlikd">
+                        <th mat-header-cell *matHeaderCellDef> Lieferanten-Teile Nr. </th>
+                        <td mat-cell *matCellDef="let element"> {{element["btnrlikd"]}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="linamekd">
+                        <th mat-header-cell *matHeaderCellDef> Lieferanten </th>
+                        <td mat-cell *matCellDef="let element"> {{element["linamekd"]}} </td>
+                    </ng-container>
+                    
+                    <ng-container matColumnDef="technDaten">
+                        <th mat-header-cell *matHeaderCellDef>
+                          Datenblatt
+                        </th>
+                        <td mat-cell *matCellDef="let element; let rowIndex = index">
+                            @if(element['technDaten']){
+                                <a class="link-icon" [href]="element['technDaten']" target="_blank">
+                                    <mat-icon style="color: red;">picture_as_pdf</mat-icon>
+                                </a>
+                            }@else {
+                                <mat-icon>folder_off</mat-icon>
+                            }
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="auswaehlen">
+                        <th mat-header-cell *matHeaderCellDef>
+                            <span class="vertical_center_container">
+                                <label
+                                    for="filterAll"
+                                    class=""
+                                    ><mat-icon>search</mat-icon></label
+                                >
+                                <input
+                                    id="filterAll"
+                                    name="filterAll"
+                                    type="text"
+                                    class="form-control form-select-sm"
+                                    (keyup)="applyFilter_bestehende_bt($event)"
+                                    style="width: 100px;"
+                                />
+                            </span>
+                        </th>
+                        <td mat-cell *matCellDef="let element"> 
+                            <div class="row">
+                                <div class="col">
+                                    <button class="btn btn-sm btn-success" 
+                                            (click)="bestehendes_bauteil_auswaehlen(element)">
+                                        auswählen
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <!-- Zeilen -->
+                    <tr mat-header-row class="verkuerzen table-header sticky-table-header"
+                        *matHeaderRowDef="bestehende_bauteil_spalten"></tr>
+                    <tr mat-row *matRowDef="let element; columns: bestehende_bauteil_spalten;"
+                        class="element-row verkuerzen jedes_zweite_row_grau"></tr>
+                </table>
+            }
+
+            <mat-paginator [length]="bestehende_bauteile_length"
+                [pageSize]="10"
+                [pageSizeOptions]="[5, 10, 25, bestehende_bauteile_length]"
+                [ngClass]="{'verstecken': !(bereit_bestehende_bt && radiobutton_pos == 2)}"
+            >
+            </mat-paginator>
+        </div>
+        <div [ngClass]="{'verstecken': radiobutton_pos !== 3}">
+            <mpl-globale-bauteil-suche 
+                [neues_projekt]="neues_projekt" 
+                [linamekd]="linamekd" 
+                [methode]="methode_import"
+                [gesamtmenge]="1"
+                (lade_status)="lade_status_aktualisieren($event)"
+                (bauteil_ausgewaehlt)="globales_bauteil_auswaehlen($event)"
+                (abbrechen)="dialog_beenden()"
+            ></mpl-globale-bauteil-suche>
+        </div>
+
+        @if(radiobutton_pos === 1 || radiobutton_pos === 2){
+            <div class="row m-2 align-items-center gap-1 margin_left_0 margin_right_0">
+                <button 
+                    type="button" 
+                    class="btn btn-secondary col-2"
+                    (click)="dialog_beenden()"
+                >
+                    Abbrechen
+                </button>
+            
+                <div class="col"></div>
+            
+                @if(radiobutton_pos === 1){
+                    <button
+                        class="btn btn-success col-2"
+                        type="submit"
+                        (click)="ImportBauteilAnlegen()"
+                        [disabled]="this.formGroup.invalid || bitte_warten_hinzufuegen"
+                    >
+                        @if(bitte_warten_hinzufuegen){
+                            Bitte warten ...
+                        }@else{
+                            Bauteil anlegen
+                        }
+                    </button>
+                }
+            </div>
+        }
+        
+    </div>
+</div>
+

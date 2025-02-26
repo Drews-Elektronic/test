@@ -1,0 +1,34 @@
+@import "../../styles/formular.scss";
+@import "../../styles/fehler.scss";
+
+// Für den Header
+.margin-left-right {
+  margin-left: 5% !important;
+  margin-right: 5% !important;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  min-height: 65vh;
+}
+
+.anfang {
+  flex: 1;
+}
+
+// Für das Formular
+form {
+  font-size: 14.4px;
+  margin-bottom: 10px;
+  padding-left: 8px;
+  padding-right: 10px;
+  padding-bottom: 5px;
+
+  background-color: none;
+}
+
+.verringere_label_padding {
+  padding-bottom: 0;
+  padding-top: 0;
+}

@@ -1,0 +1,9 @@
+<div class="row">
+  <h3 class="col">
+    {{ CurrentTitle }} <span *ngIf="insgesamt"> ({{ insgesamt }}) </span>
+  </h3>
+  
+  <div class="col-8" style="margin-right: 10px;">
+    <ng-content></ng-content> <!-- fügt den HTML Sachen aus den Parents hier ein. -->
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="container">
+  <mat-form-field class="left">
+    <mat-label>Suchen</mat-label>
+    <input matInput (keyup)="filter($event)" #input>
+  </mat-form-field>
+  
+  <div class="right" *ngIf="functions && auftrag_function">
+    <button mat-fab extended (click)="Create()">
+      <mat-icon>add</mat-icon> {{ button_name }} 
+    </button>
+  </div>
+</div>
+
+<div class="scrolling">
+  <table mat-table [dataSource]="dataSource" matSort>
+    
+    @for (column of columns; track column) {
+      <ng-container [matColumnDef]="column.columnDef">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          @if (column.matTooltip) {
+            <div [matTooltip]="column.matTooltip"> {{column.header}} </div> 
+          }@else {
+            {{column.header}}
+          }
+        </th>
+        <td mat-cell *matCellDef="let row; let i = index;" (click)="Update(i)">
+          {{column.cell(row)}}
+        </td>
+      </ng-container>
+    }
+
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef>  </th>
+      <td mat-cell *matCellDef="let element; let i = index;"> 
+        <button mat-mini-fab color="warn" (click)="Delete(i)"> 
+          <mat-icon>delete</mat-icon>
+        </button> 
+      </td>
+    </ng-container>
+
+    <tr 
+      mat-header-row 
+      *matHeaderRowDef="displayedColumns"
+    ></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index;" [class.ausgewaehlt]="i === ausgewaehlt" 
+    ></tr>
+
+    <!-- Row shown when there is no matching data. -->
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell">Keine Übereinstimmung für die Suche '{{input.value}}' gefunden</td>
+    </tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
+</div>

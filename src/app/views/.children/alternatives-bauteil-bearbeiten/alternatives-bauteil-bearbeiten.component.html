@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>
+  {{ data.titel }}
+</h1>
+@if(data.content && data.content != ""){
+  <div mat-dialog-content>
+    {{ data.content }}
+  </div>
+}
+
+<div mat-dialog-actions class="spacing row">
+  @for (button of buttons; track $index) {
+    <button 
+      class="btn btn-{{ button.style }} col" 
+      [mat-dialog-close]="button.return" 
+      cdkFocusInitial> 
+        {{ button.name }}
+    </button>
+  }
+
+  <button class="btn btn-secondary col" style="margin-left: auto;" (click)="abbrechen()">Abbrechen</button>
+</div>

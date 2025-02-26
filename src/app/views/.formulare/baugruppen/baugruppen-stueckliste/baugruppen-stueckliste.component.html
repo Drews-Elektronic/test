@@ -1,0 +1,1471 @@
+<br>
+<div class="container-xl">
+    
+    <h3> 
+        My BOM ({{ selectedStueckliste.data.length }})
+    </h3>
+    @if(bereit && bgnrkd){
+        @if (neues_projekt) {
+            <mpl-navigation [neues_projekt]="true" [position]="3" [bgnr]="bgnr" 
+            ></mpl-navigation>
+        }@else if (neuer_auftrag) {
+            <mpl-navigation [neuer_auftrag]="true" [position]="2" [bgnr]="bgnr" [name]="bgnrkd"
+            ></mpl-navigation>
+        }@else{
+            <mpl-navigation [baugruppen]="true" [position]="1" [bgnr]="bgnr" [name]="bgnrkd"
+            ></mpl-navigation>
+        }
+    }@else{
+        <h6>
+            Es wird geladen.
+        </h6>
+    }
+
+    <div class="sticky">
+        <mpl-ladebalken [falsches_laden_beginnen]="!(bereit && bereit_eine_verfuegbarkeit)" [lade_status]="prozent_fertig_gepruefte_bt"></mpl-ladebalken>
+
+        @if(bereit){
+            <div class="row" style="gap: 7px; margin-right: 0">
+                <!--
+                <label
+                    for="filterAll"
+                    class="form-label col-1"
+                    >Suchen</label
+                >
+                <div class="col-2 ">
+                    <input
+                        name="filterAll"
+                        type="text"
+                        class="form-control form-select-sm"
+                        (change)="applyFilter($event)"
+                        [(ngModel)]="filterAll"
+                    />
+                </div>
+                -->
+                <div class="col-1"></div>
+                <div class="col-2"></div>
+
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+        
+                <!--
+                <button
+                    type="button"
+                    class="btn btn-secondary col"
+                    (click)="loescheStueckliste($event)"
+                    [disabled]="selection.selected.length === 0"
+                >
+                    @if (selection.selected.length === 0 || selection.selected.length === 1) {
+                        Bauteil löschen
+                    }@else if (selection.selected.length > 1 && selection.selected.length !== selectedStueckliste.data.length) {
+                        {{selection.selected.length}} Bauteile löschen
+                    }@else{
+                        Alles löschen
+                    }
+                </button>
+                -->
+                <div class="col"></div>
+
+                <button 
+                    type="submit" 
+                    class="btn btn-secondary col" 
+                    (click)="alle_verfuegbarkeiten_pruefen()"
+                    [disabled] = "!(selectedStueckliste.data.length == 0 || !baugruppenmenge || bereit_alle_verfuegbarkeiten)"
+                >
+                    @if (bereit_alle_verfuegbarkeiten) {
+                        Verfügbarkeit prüfen
+                    }@else {
+                        Bitte warten
+                    }
+                </button>
+            </div>
+        }
+    </div>
+    
+    @if(!bereit){
+        <div style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 25vh;
+            ">
+                <mat-spinner></mat-spinner>
+        </div>
+    }@else{
+        
+        
+
+        <!--
+        <div class="row margin_right_0">
+            <label
+                for="menge"
+                class="form-label col-1"
+                >Menge</label
+            >
+            <div class="col-2">
+                <input
+                    name="menge"
+                    type="number"
+                    class="form-control form-select-sm"
+                    [(ngModel)]="baugruppenmenge"
+                    (change)="change_baugruppenmenge()"
+                />
+            </div>
+            
+            <div class="col"> ( Es dient nur zum Testen. Nachdem Testen soll es verschoben werden. ) </div>
+    
+            <div class="col-4">
+                -->
+                <!--
+                    Die Baugruppen Stückliste/BOM besitzt, sowohl komprimierte, 
+                    als auch unkomprimierte Daten, wodurch die Verfügbarkeit und alternatives Bauteil nur in der komprimierten gefunden werden kann.
+                -->
+                <!-- Die Wechselbaren Kopfzeilen werden zurzeit nicht benötigt
+                <mat-radio-group class="row" (change)="onRadioChange($event)">
+                    <mat-radio-button class="col" value="sl"> original </mat-radio-button>
+                    <mat-radio-button class="col" value="slkomp" #komp checked>     komprimiert </mat-radio-button>
+                </mat-radio-group>
+                -->
+                <!--
+            </div>
+        </div>
+        -->
+    
+        <br>
+    
+        <table mat-table
+                [dataSource]="selectedStueckliste" multiTemplateDataRows
+                >
+
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                                    [checked]="selection.hasValue() && isAllSelected()"
+                                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? selection.toggle(row) : null"
+                                    [checked]="selection.isSelected(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="soll">
+                <th mat-header-cell *matHeaderCellDef> </th>
+                <td mat-cell *matCellDef="let element"> 
+                    @if(element['agbskd'] == Beistellung.BESCHAFFUNG && element['maxlbverfuegbar'] != QuellenStatus.NICHT_GEPRUEFT){
+                        @if(element['maxlbverfuegbar'] == QuellenStatus.ALTERNATIVE_VERFUEGBAR || element['maxlbverfuegbar'] == QuellenStatus.ALTERNATIVE_VERFUEGBAR_IN){
+                            Soll
+                        }
+                    }
+                </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="bompos">
+                <th mat-header-cell *matHeaderCellDef> POS </th>
+                <td mat-cell *matCellDef="let element"> 
+                    <div class="badge-medium">
+                        <span class="badge rounded-pill text-bg-secondary ">
+                            {{element["bompos"]}} 
+                        </span>
+                    </div>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="btnrkd">
+                <th mat-header-cell *matHeaderCellDef> Bauteil Nr </th>
+                <td mat-cell *matCellDef="let element"> 
+                    {{element["btnrkd"]}}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="btbeschreibungkd"> 
+                <th mat-header-cell *matHeaderCellDef> Bauteil Beschreibung </th> 
+                <td mat-cell *matCellDef="let element"> 
+                    {{element["btbeschreibungkd"]}} 
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="htnrkd">
+                <th mat-header-cell *matHeaderCellDef> Hersteller-Teile Nr. </th>
+                <td mat-cell *matCellDef="let element"> 
+                    {{element["htnrkd"]}} 
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="htnhkd">
+                <th mat-header-cell *matHeaderCellDef> Hersteller </th>
+                <td mat-cell *matCellDef="let element"> 
+                    {{element["htnhkd"]}} 
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="lieferZeit">
+                <th mat-header-cell *matHeaderCellDef> Lieferzeit </th>
+                <td mat-cell *matCellDef="let element">
+                    @if(
+                        element['agbskd'] == Beistellung.BESCHAFFUNG
+                        && (
+                            element['maxlbverfuegbar'] == QuellenStatus.VERFUEGBAR_IN
+                            || element['maxlbverfuegbar'] == QuellenStatus.VERFUEGBAR
+                        )
+                    ){
+                        <span class="text-nowrap" [class.laengste_lieferzeit]="top_laengste_lieferzeit && top_laengste_lieferzeit.includes(element.btnr)" style="padding: 5px;">
+                            {{ element["lieferZeit"] }} Tage
+                        </span>
+                    }@else {
+                        -   
+                    }
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="gesamtpreis">
+                <th mat-header-cell *matHeaderCellDef> Gesamtpreis</th>
+                <td mat-cell *matCellDef="let element">
+                    @if(
+                        element['agbskd'] == Beistellung.BESCHAFFUNG
+                        && (
+                            element['maxlbverfuegbar'] == QuellenStatus.VERFUEGBAR_IN
+                            || element['maxlbverfuegbar'] == QuellenStatus.VERFUEGBAR
+                        )
+                    ){
+                        <span class="text-nowrap" [class.teuerste_bauteile]="top_teuersten_bauteile && top_teuersten_bauteile.includes(element.btnr)" style="padding: 5px;">
+                            {{ element["betragbeschaffungsmenge"] | currency:'EUR':'symbol':'1.2-2':'de-DE' }}
+                        </span>
+                    }@else {
+                        -   
+                    }
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="anzprobg">
+                <th mat-header-cell *matHeaderCellDef> Anzahl pro BG </th>
+                <td mat-cell *matCellDef="let element"> 
+                    {{element["anzprobg"]}} 
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="bauteil_suchen">
+                <th mat-header-cell *matHeaderCellDef> Bauteil suchen </th>
+                <td mat-cell *matCellDef="let element"> 
+                    <div
+                        matTooltip="Nur unter 'komprimiert' verfügbar!"
+                        [matTooltipDisabled]="komprimiert"
+                    >
+                        <button
+                            [id]="element?.slnr"
+                            type="button"
+                            class="btn btn-secondary btn-sm Button_in_einer_Tabellen_Spalte"
+                            [disabled]="!komprimiert || !baugruppenmenge || baugruppenmenge==0"
+                            (click)="$event.stopPropagation()"
+                            [matMenuTriggerFor]="menu"
+                        >
+                            <div class="vertical_center_container">
+                                <div style="display: inline-block !important">
+                                    Bauteil suchen
+                                </div>
+
+                                <div style="display: inline-block !important" class="pi pi-angle-down">
+                                </div>
+                            </div>
+                        </button>
+
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="alternative_suche($event, element)">
+                                Bauteil suchen
+                            </button>
+
+                            @if(element['agbskd'] == Beistellung.BEISTELLUNG){
+                                <button mat-menu-item (click)="Bauteil_als_beschaffen_umstellen($event, element)">
+                                    Beschaffen
+                                </button>
+                            }@else{
+                                <button mat-menu-item (click)="Bauteil_als_beigestellt_umstellen($event, element)">
+                                    beistellen
+                                </button>
+                            }
+                            
+                            @if(element['agbskd'] == Beistellung.NICHT_BESTUECKEN){
+                                <button mat-menu-item (click)="Bauteil_als_beschaffen_umstellen($event, element)">
+                                    Beschaffen
+                                </button>
+                            }@else{
+                                <button mat-menu-item (click)="Bauteil_als_nicht_bestuecken_umstellen($event, element)">
+                                    nicht bestücken
+                                </button>
+                            }
+                        </mat-menu>
+                    </div>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="verfuegbar">
+                <th mat-header-cell *matHeaderCellDef>Verfügbar</th>
+                <td mat-cell *matCellDef="let element;"> 
+                    <div style="font-size: 18px;">
+                        @if(element.spinning){
+                            <div class="col-1">
+                                <div class="spinner-border align-left" role="status"></div>
+                            </div>
+                        }@else{
+                            @if (element['agbskd'] == Beistellung.BESCHAFFUNG) {
+                                @if(element['maxlbverfuegbar'] == QuellenStatus.NICHT_GEPRUEFT){
+                                    <span class="badge rounded-pill text-bg-secondary"> 
+                                        @if(bereit_alle_verfuegbarkeiten){
+                                            nicht geprüft   
+                                        }@else {
+                                            warten
+                                        }
+                                    </span>
+                                }@else if (element['maxlbverfuegbar'] == QuellenStatus.NICHT_VERFUEGBAR) {
+                                    <span class="badge rounded-pill text-bg-danger">    nicht Verfügbar </span>
+                                }@else if (element['maxlbverfuegbar'] == QuellenStatus.VERFUEGBAR_IN) {
+                                    <span class="badge rounded-pill text-bg-success">    Verfügbar  </span>
+                                    <!--
+                                    <span class="badge rounded-pill text-bg-success">    Verfügbar in {{ element['lieferZeit'] }} Tagen </span>
+                                    -->
+                                }@else if (element['maxlbverfuegbar'] == QuellenStatus.VERFUEGBAR) {
+                                    <span class="badge rounded-pill text-bg-success">   Verfügbar       </span>
+                                }@else if (element['maxlbverfuegbar'] == QuellenStatus.ALTERNATIVE_VERFUEGBAR || element['maxlbverfuegbar'] == QuellenStatus.ALTERNATIVE_VERFUEGBAR_IN) {
+                                    <span class="badge rounded-pill text-bg-danger">    nicht Verfügbar </span>
+
+                                    <!--
+                                    <span class="badge rounded-pill text-bg-success">   
+                                        alternatives Verfügbar 
+                                        <button
+                                            type="button"
+                                            class="btn btn-secondary"
+                                            style="padding: 0px; margin: 0px; border: 0px; height: 20px; width: 20px;"
+                                            (click)="alternatives_loeschen($event, element)"
+                                        >
+                                            <mat-icon style="font-size: 15px; height: auto; width: auto;">close</mat-icon>
+                                        </button>
+                                    </span>
+                                    -->
+                                }@else if (element['maxlbverfuegbar'] == QuellenStatus.ALTERNATIVE_NICHT_VERFUEGBAR) {
+                                    <span class="badge rounded-pill text-bg-danger">    nicht Verfügbar </span>
+
+                                    <!--
+                                    <span class="badge rounded-pill text-bg-danger">
+                                        alternatives nicht Verfügbar 
+                                        <button
+                                            type="button"
+                                            class="btn btn-secondary"
+                                            style="padding: 0px; margin: 0px; border: 0px; height: 20px; width: 20px;"
+                                            (click)="alternatives_loeschen($event, element)"
+                                        >
+                                            <mat-icon style="font-size: 15px; height: auto; width: auto;">close</mat-icon>
+                                        </button> 
+                                    </span>
+                                    -->
+                                }
+                            }@else if (element['agbskd'] == Beistellung.BEISTELLUNG) {
+                                <span class="badge rounded-pill text-bg-warning"> von ihnen Beigestellt </span>
+                            }@else if (element['agbskd'] == Beistellung.NICHT_BESTUECKEN) {
+                                <span class="badge rounded-pill" style="background-color: orangered; color:white"> nicht Bestücken </span>
+                            }@else if (element['agbskd'] == Beistellung.BEISTELLUNG_DURCH_FEHLER) {
+                                <span class="badge rounded-pill text-bg-warning">  von ihnen Beigestellt </span>
+                            }
+                        }
+                    </div>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="btnrlikd">
+                <th mat-header-cell *matHeaderCellDef> Lieferanten-Teile Nr. </th>
+                <td mat-cell *matCellDef="let element"> 
+                    {{element["btnrlikd"]}} 
+                </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="slbemerkungkd">
+                <th mat-header-cell *matHeaderCellDef>  </th>
+                <td mat-cell *matCellDef="let element">
+                    <span *ngIf="element['slbemerkungkd'] || element['btbemerkungkd']"> 
+                        &#9733;
+                    </span> 
+                    <span *ngIf="!element['slbemerkungkd'] && !element['btbemerkungkd']"> 
+                        &minus;
+                    </span> 
+                </td>
+            </ng-container>
+    
+            <!-- Wird für die zweite Zeile verwendet -->
+            <ng-container matColumnDef="ist">
+                <td mat-cell *matCellDef="let element"> 
+                    Ist
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="ist-btbeschreibungkd"> <!-- Bauteil Beschreibung -->
+                <td mat-cell *matCellDef="let element"> 
+                    {{element?.bauteilquelle?.btqbeschreibung}} 
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="ist-htnrkd"> <!-- Hersteller Teile Nr. -->
+                <td mat-cell *matCellDef="let element"> 
+                    {{element?.bauteilquelle?.htnr}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ist-lieferZeit">
+                <td mat-cell *matCellDef="let element"> 
+                    @if(
+                        element['agbskd'] == Beistellung.BESCHAFFUNG
+                        && (
+                            element['maxlbverfuegbar'] == QuellenStatus.ALTERNATIVE_VERFUEGBAR
+                            || element['maxlbverfuegbar'] == QuellenStatus.ALTERNATIVE_VERFUEGBAR_IN
+                        )
+                    ){
+                        <span class="text-nowrap" [class.laengste_lieferzeit]="top_laengste_lieferzeit && top_laengste_lieferzeit.includes(element.btnr)" style="padding: 5px;">
+                            {{ element["lieferZeit"] }} Tage
+                        </span>
+                    }@else {
+                        -   
+                    }
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ist-gesamtpreis">
+                <td mat-cell *matCellDef="let element"> 
+                    <span class="text-nowrap" [class.teuerste_bauteile]="top_teuersten_bauteile && top_teuersten_bauteile.includes(element.btnr)" style="padding: 5px;">
+                        {{ element["betragbeschaffungsmenge"] | currency:'EUR':'symbol':'1.2-2':'de-DE' }}
+                    </span>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ist-verfuegbar">
+                <td mat-cell *matCellDef="let element;"> 
+                    <div 
+                        style="font-size: 18px;"
+                        matTooltip="Nur unter 'komprimiert' verfügbar!"
+                        [matTooltipDisabled]="komprimiert"
+                    >
+                        @if(element['agbskd'] == Beistellung.BESCHAFFUNG && !element['spinning']){
+                            @if (element['maxlbverfuegbar'] == QuellenStatus.ALTERNATIVE_VERFUEGBAR) {
+                                <!--
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary Button_in_einer_Tabellen_Spalte"
+                                    [disabled]="!komprimiert || !baugruppenmenge || baugruppenmenge==0"
+                                    (click)="alternative_bearbeiten($event, element)"
+                                >
+                                    <div>
+                                        alternatives Bauteil beabeiten
+                                    </div>
+                                </button> 
+                                -->
+
+                                <span class="badge rounded-pill text-bg-success">   
+                                    alternatives Verfügbar 
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary"
+                                        style="padding: 0px; margin: 0px; border: 0px; height: 20px; width: 20px;"
+                                        (click)="alternatives_loeschen($event, element)"
+                                    >
+                                        <mat-icon style="font-size: 15px; height: auto; width: auto;">close</mat-icon>
+                                    </button>
+                                </span>
+                            }@else if (element['maxlbverfuegbar'] == QuellenStatus.ALTERNATIVE_VERFUEGBAR_IN) {
+                                <span class="badge rounded-pill text-bg-success"> 
+                                    alternatives Bauteil Verfügbar
+
+                                    <!--
+                                    alternatives Bauteil Verfügbar in {{ element['lieferZeit'] }} Tagen 
+                                    -->
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary"
+                                        style="padding: 0px; margin: 0px; border: 0px; height: 20px; width: 20px;"
+                                        (click)="alternatives_loeschen($event, element)"
+                                    >
+                                        <mat-icon style="font-size: 15px; height: auto; width: auto;">close</mat-icon>
+                                    </button>
+                                </span>
+                            }@else if(element['maxlbverfuegbar'] == QuellenStatus.ALTERNATIVE_NICHT_VERFUEGBAR) {
+                                <span class="badge rounded-pill text-bg-danger">
+                                    alternatives nicht Verfügbar 
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary"
+                                        style="padding: 0px; margin: 0px; border: 0px; height: 20px; width: 20px;"
+                                        (click)="alternatives_loeschen($event, element)"
+                                    >
+                                        <mat-icon style="font-size: 15px; height: auto; width: auto;">close</mat-icon>
+                                    </button> 
+                                </span>
+                            }
+                        }
+                    </div>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="technDaten">
+                <th mat-header-cell *matHeaderCellDef> Datenblatt </th>
+                <td mat-cell *matCellDef="let element; let rowIndex = index">
+                    @if(element['technDaten']){
+                        <a class="link-icon" [href]="element['technDaten']" target="_blank">
+                            <mat-icon style="color: red;">picture_as_pdf</mat-icon>
+                        </a>
+                    }@else {
+                        <mat-icon>folder_off</mat-icon>
+                    }
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="technDaten-ohne-header"> <!-- Hersteller Teile Nr. -->
+                <td mat-cell *matCellDef="let element">
+                    @if(element['technDatenBQ']){
+                        <a class="link-icon" [href]="element['technDatenBQ']" target="_blank">
+                            <mat-icon style="color: red;">picture_as_pdf</mat-icon>
+                        </a>
+                    }@else {
+                        <mat-icon>folder_off</mat-icon>
+                    }
+                </td>
+            </ng-container>
+
+            <!-- Wird verwendet wenn Komprimiert im Radiobutton ausgewählt wird -->
+            <ng-container matColumnDef="anzprobgkomp">
+                <th mat-header-cell *matHeaderCellDef> Anzahl pro BG </th>
+                <td mat-cell *matCellDef="let element"> {{element["anzprobgkomp"]}} </td>
+            </ng-container>
+    
+            <!-- Wird verwendet wenn eine Zelle leer sein soll -->
+            <ng-container matColumnDef="leer"> <!-- Hersteller Teile Nr. -->
+                <td mat-cell *matCellDef="let element"></td>
+            </ng-container>
+
+            <!-- Löschen Knopf mit Mülltonnen Symbol -->
+            <ng-container matColumnDef="loeschen">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-icon 
+                        class="clickable main_muelltonne_anpasssen"
+                        (click)="loescheStueckliste($event)"
+                    >
+                        delete
+                    </mat-icon>
+                </th>
+                <td mat-cell *matCellDef="let element"> 
+                    <mat-icon 
+                        class="clickable muelltonne_anpasssen"
+                        (click)="loescheStueckliste($event, element)"
+                    >
+                        delete
+                    </mat-icon>
+                </td>
+            </ng-container>
+    
+            <!-- Spalte mit dem Pfeil Symbol -->
+            <ng-container matColumnDef="expand">
+                <th mat-header-cell *matHeaderCellDef>
+                    <span class="vertical_center_container">
+                        <label
+                            for="filterAll"
+                            class=""
+                            ><mat-icon>search</mat-icon></label
+                        >
+                        <input
+                            id="filterAll"
+                            name="filterAll"
+                            type="text"
+                            class="form-control form-select-sm"
+                            (keyup)="applyFilter($event)"
+                            style="width: 100px;"
+                        />
+                    </span>
+                </th>
+                <td mat-cell *matCellDef="let element" style="text-align:right; width: 10px;">
+                    <div mat-icon-button (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                        <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+                        <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+                    </div>
+                </td>
+            </ng-container>
+    
+            <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+            <ng-container matColumnDef="expandedDetail">
+                <td mat-cell 
+                    *matCellDef="let element; let i = dataIndex" 
+                    [attr.colspan]="ErsteSelectedColoums.length"
+                >
+                    <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                        <form 
+                            #bauteileform="ngForm"
+                            [ngClass]="{
+                                'mit-alternativem-bauteil': 
+                                    element?.spinning !== true
+                                    && element?.bauteilquelle    
+                                    && komprimiert 
+                                    && element['maxlbverfuegbar'] != QuellenStatus.NICHT_GEPRUEFT
+                                    && element['agbskd'] == Beistellung.BESCHAFFUNG 
+                                    && element['maxlbverfuegbar'] != QuellenStatus.ALTERNATIVE_NICHT_VERFUEGBAR 
+                                    && element['maxlbverfuegbar'] != QuellenStatus.NICHT_VERFUEGBAR 
+                            }"
+                        >
+                            <div class="container-fluid box-anpassen">
+                                <!-- Bauteildaten -->
+                                <div class="row">
+                                    <!-- Kunden Bauteil Übersicht -->
+                                    <div class="col">
+                                        <h5 style="display: flex; justify-content: space-between;">
+                                            <div style="display: inline-block; align-self: flex-end;"> Soll-Bauteildaten </div> 
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-secondary"
+                                                style="padding-bottom: 0%; padding-left: 8px; padding-right: 8px;"
+                                                (click)="expandedElement = undefined;"
+                                                [ngClass]="{
+                                                    'verstecken-aber-platzbehalten': 
+                                                        komprimiert 
+                                                        && element['agbskd'] == Beistellung.BESCHAFFUNG 
+                                                        && element['maxlbverfuegbar'] != QuellenStatus.ALTERNATIVE_NICHT_VERFUEGBAR 
+                                                        && element['maxlbverfuegbar'] != QuellenStatus.NICHT_VERFUEGBAR 
+                                                }"
+                                            >
+                                                <mat-icon>close</mat-icon>
+                                            </button>
+                                        </h5>
+            
+                                        <div class="row">
+                                            <label
+                                                for="btnrkd{{ i }}"
+                                                class="form-label col-3"
+                                                >Bauteilnummer</label
+                                            >
+                                            <div class="col">
+                                                <input
+                                                    id="btnrkd{{ i }}"
+                                                    name="btnrkd{{ i }}"
+                                                    type="text"
+                                                    class="form-control form-select-sm"
+                                                    [(ngModel)]="element.btnrkd"
+                                                    disabled
+                                                />
+                                            </div>
+                                        </div>
+            
+                                        <div class="row">
+                                            <label
+                                                for="btbeschreibungkd{{ i }}"
+                                                class="form-label col-3"
+                                                >Bauteilbeschreibung</label
+                                            >
+                                            <div class="col">
+                                                <input
+                                                    id="btbeschreibungkd{{ i }}"
+                                                    name="btbeschreibungkd{{ i }}"
+                                                    type="text"
+                                                    class="form-control form-select-sm"
+                                                    [(ngModel)]="element.btbeschreibungkd"
+                                                    disabled
+                                                />
+                                            </div>
+                                        </div>
+            
+                                        <div class="row">
+                                            <label
+                                                for="htnrkd{{ i }}"
+                                                class="form-label col-3"
+                                                >Hersteller-Teile Nr. </label
+                                            >
+                                            <div class="col">
+                                                <input
+                                                    id="htnrkd{{ i }}"
+                                                    name="htnrkd{{ i }}"
+                                                    type="text"
+                                                    class="form-control form-select-sm"
+                                                    [(ngModel)]="element.htnrkd"
+                                                    disabled
+                                                />
+                                            </div>
+            
+                                            <label 
+                                                for="agbtkd{{ i }}" 
+                                                class="form-label col-3 align-right"
+                                                >Bauteilart</label
+                                            >
+                                            <div class="col">
+                                                <select
+                                                    id="agbtkd{{ i }}"
+                                                    name="agbtkd{{ i }}"
+                                                    type="text"
+                                                    class="form-select form-select-sm"
+                                                    [(ngModel)]="element.agbtkd"
+                                                    disabled
+                                                >
+                                                    <option *ngFor="let x of agbtkd" [value]="x.value"> {{x.name}} </option>
+                                                    <!-- [selected]="x?.standard" rausgenommen, durch [selected] wird der Wert der Variable im dropdown als default value verwende -->
+                                                </select>
+                                            </div>
+                                        </div>
+            
+                                        <div class="row">
+                                            <label
+                                                for="htnhkd{{ i }}"
+                                                class="form-label col-3"
+                                                >Hersteller</label
+                                            >
+                                            <div class="col">
+                                                <input
+                                                    id="htnhkd{{ i }}"
+                                                    name="htnhkd{{ i }}"
+                                                    type="text"
+                                                    class="form-control form-select-sm"
+                                                    [(ngModel)]="element.htnhkd"
+                                                    disabled
+                                                />
+                                            </div>
+            
+                                            <!--
+                                            <label 
+                                                for="agbskd{{ i }}" 
+                                                class="form-label col-3 align-right"
+                                                >Beistellung</label
+                                            >
+                                            <div class="col">
+                                                <select
+                                                    id="agbskd{{ i }}"
+                                                    name="agbskd{{ i }}"
+                                                    type="text"
+                                                    class="form-select form-select-sm"
+                                                    [(ngModel)]="element.agbskd"
+                                                    disabled
+                                                >
+                                                    <option *ngFor="let x of agbskd" [value]="x.value"> {{x.name}} </option>
+                                                </select>
+                                            </div>
+                                            -->
+                                            <div class="col-3"></div>
+                                            <div class="col"></div>
+                                        </div>
+            
+                                        <div class="row">
+                                            <div class="col-3"></div>
+                                            <div class="col"></div>
+            
+                                            <div class="col"></div>
+                                            
+                                            <!--
+                                            <label 
+                                                for="aglakd{{ i }}" 
+                                                class="form-label col-3 align-right"
+                                                >Lief.B.Auswahl</label
+                                            >
+                                            <div class="col">
+                                                <select
+                                                    id="aglakd{{ i }}"
+                                                    name="aglakd{{ i }}"
+                                                    class="form-select form-select-sm"
+                                                    [(ngModel)]="element.aglakd"
+                                                    disabled
+                                                >
+                                                    <option *ngFor="let x of aglakd" [value]="x.value"> {{x.name}} </option>
+                                                </select>
+                                            </div>
+                                            -->
+                                            <div class="col-3"></div>
+                                            <div class="col"></div>
+                                        </div>
+            
+                                        <div class="row">
+                                            <label 
+                                                for="btnrlikd{{ i }}" 
+                                                class="form-label col-3"
+                                                >Lieferanten-Teile Nr.</label
+                                            >
+                                            <div class="col">
+                                                <input
+                                                    id="btnrlikd{{ i }}"
+                                                    name="btnrlikd{{ i }}"
+                                                    class="form-control form-select-sm"
+                                                    [(ngModel)]="element.btnrlikd"
+                                                    disabled
+                                                >
+                                            </div>
+            
+                                            <!--
+                                            <label 
+                                                for="aghakd{{ i }}" 
+                                                class="form-label col-3 align-right"
+                                                >Herst.Auswahl</label
+                                            >
+                                            <div class="col">
+                                                <select
+                                                    id="aghakd{{ i }}"
+                                                    name="aghakd{{ i }}"
+                                                    class="form-select form-select-sm"
+                                                    [(ngModel)]="element.aghakd"
+                                                    disabled
+                                                >
+                                                    <option *ngFor="let x of aghakd" [value]="x.value"> {{x.name}} </option>
+                                                </select>
+                                            </div>
+                                            -->
+        
+                                            <div class="col-3"></div>
+                                            <div class="col"></div>
+                                        </div>
+            
+                                        <div class="row">
+                                            <label 
+                                                for="linamekd{{ i }}" 
+                                                class="form-label col-3"
+                                                >Lieferant</label
+                                            >
+                                            <div class="col">
+                                                <input
+                                                    id="linamekd{{ i }}"
+                                                    name="linamekd{{ i }}"
+                                                    class="form-control form-select-sm"
+                                                    [(ngModel)]="element.linamekd"
+                                                    disabled
+                                                >
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <label
+                                                for="anlagezeitpunkt{{ i }}"
+                                                class="form-label col-3"
+                                                >Anlagezeitpunkt</label
+                                            >
+                                            <div class="col">
+                                                <input
+                                                    id="anlagezeitpunkt{{ i }}"
+                                                    name="anlagezeitpunkt{{ i }}"
+                                                    type="text"
+                                                    class="form-control form-select-sm align-right"
+                                                    [(ngModel)]="element.anlagezeitpunkt"
+                                                    disabled
+                                                />
+                                            </div>
+            
+                                            <label
+                                                for="LetzteAenderung{{ i }}"
+                                                class="form-label col-3 align-right"
+                                                >Letzte Änderung</label
+                                            >
+                                            <div class="col">
+                                                <input
+                                                    id="LetzteAenderung{{ i }}"
+                                                    name="LetzteAenderung{{ i }}"
+                                                    type="text"
+                                                    class="form-control form-select-sm align-right"
+                                                    [(ngModel)]="element.letzteaenderungzpkt"
+                                                    disabled
+                                                />
+                                            </div>
+                                        </div>
+            
+                                        <div class="row">
+                                            <label
+                                                for="btbemerkungkd{{ i }}"
+                                                class="form-label col-3"
+                                                >Bauteil-Bemerkungen</label
+                                            >
+                                            
+                                            <div class="col">
+                                                <input
+                                                    id="btbemerkungkd{{ i }}"
+                                                    name="btbemerkungkd{{ i }}"
+                                                    type="text"
+                                                    class="form-control form-select-sm"
+                                                    [(ngModel)]="element.btbemerkungkd"
+                                                    disabled
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <span style="padding-left: 0px; padding-right: 0px; margin-bottom: 5px;" class="vr"></span>
+                                    -->
+
+                                    <!-- Bauteil Quelle Übersicht -->
+                                    @if (
+                                        element?.spinning !== true
+                                        && element?.bauteilquelle
+                                        && komprimiert 
+                                        && element['maxlbverfuegbar'] != QuellenStatus.NICHT_GEPRUEFT
+                                        && element['agbskd'] == Beistellung.BESCHAFFUNG 
+                                        && element['maxlbverfuegbar'] != QuellenStatus.ALTERNATIVE_NICHT_VERFUEGBAR 
+                                        && element['maxlbverfuegbar'] != QuellenStatus.NICHT_VERFUEGBAR 
+                                    ) {
+                                        <div class="col">
+                                            <h5 style="display: flex; justify-content: space-between;">
+                                                <div style="display: inline-block; align-self: flex-end;"> Ist-Bauteildaten </div> 
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-secondary"
+                                                    style="padding-bottom: 0%; padding-left: 8px; padding-right: 8px;"
+                                                    (click)="expandedElement = undefined;"
+                                                >
+                                                    <mat-icon>close</mat-icon>
+                                                </button>
+                                            </h5>
+
+                                            <div class="row verstecken-aber-platzbehalten">
+                                                <label
+                                                    class="form-label col-3"
+                                                    >Bauteilnummer</label
+                                                >
+                                                <div class="col">
+                                                    <input
+                                                        class="form-control form-select-sm"
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+                
+                                            <div class="row">
+                                                <label
+                                                    for="btqbeschreibung{{ i }}"
+                                                    class="form-label col-3"
+                                                    >Bauteilbeschreibung</label
+                                                >
+                                                <div class="col">
+                                                    <input
+                                                        id="btqbeschreibung{{ i }}"
+                                                        name="btqbeschreibung{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm"
+                                                        [value]="element?.bauteilquelle?.btqbeschreibung"
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+                
+                                            <div class="row">
+                                                <label
+                                                    for="btqhtnr{{ i }}"
+                                                    class="form-label col-3"
+                                                    >Hersteller-Teile Nr. </label
+                                                >
+                                                <div class="col">
+                                                    <input
+                                                        id="btqhtnr{{ i }}"
+                                                        name="btqhtnr{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm"
+                                                        [value]="element?.bauteilquelle?.htnr"
+                                                        disabled
+                                                    />
+                                                </div>
+                
+                                                <div class="col-3"></div>
+                                                <div class="col"></div>
+                                            </div>
+                
+                                            <div class="row">
+                                                <label
+                                                    for="btqhtnh{{ i }}"
+                                                    class="form-label col-3"
+                                                    >Hersteller</label
+                                                >
+                                                <div class="col">
+                                                    <input
+                                                        id="btqhtnh{{ i }}"
+                                                        name="btqhtnh{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm"
+                                                        [value]="element?.bauteilquelle?.htnh"
+                                                        disabled
+                                                    />
+                                                </div>
+                
+                                                <div class="col-3"></div>
+                                                <div class="col"></div>
+                                            </div>
+                
+                                            <div class="row">
+                                                <label 
+                                                    for="btnrlikd{{ i }}" 
+                                                    class="form-label col-3"
+                                                    >Lieferanten-Teile Nr.</label
+                                                >
+                                                <div class="col">
+                                                    <input
+                                                        id="btnrlikd{{ i }}"
+                                                        name="btnrlikd{{ i }}"
+                                                        class="form-control form-select-sm"
+                                                        [value]="element?.bauteilquelle?.btnrli"
+                                                        disabled
+                                                    >
+                                                </div>
+
+                                                <div class="col-3"></div>
+                                                <div class="col"></div>
+                                            </div>
+                
+                                            <div class="row">
+                                                <label 
+                                                    for="btqlieferant{{ i }}" 
+                                                    class="form-label col-3"
+                                                    >Lieferant</label
+                                                >
+                                                <div class="col">
+                                                    <input
+                                                        id="btqlieferant{{ i }}"
+                                                        name="btqlieferant{{ i }}"
+                                                        class="form-control form-select-sm"
+                                                        [value]="element?.bauteilquelle?.lieferantkurz"
+                                                        disabled
+                                                    >
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <label
+                                                    for="anlagezeitpunkt{{ i }}"
+                                                    class="form-label col-3"
+                                                    >Anlagezeitpunkt</label
+                                                >
+                                                <div class="col">
+                                                    <input
+                                                        id="anlagezeitpunkt{{ i }}"
+                                                        name="anlagezeitpunkt{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm align-right"
+                                                        [value]="element?.bauteilquelle?.anlagezpkt"
+                                                        disabled
+                                                    />
+                                                </div>
+                
+                                                <label
+                                                    for="LetzteAenderung{{ i }}"
+                                                    class="form-label col-3 align-right"
+                                                    >Letzte Änderung</label
+                                                >
+                                                <div class="col">
+                                                    <input
+                                                        id="LetzteAenderung{{ i }}"
+                                                        name="LetzteAenderung{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm align-right"
+                                                        [value]="element?.bauteilquelle?.aktuell"
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div class="row verstecken-aber-platzbehalten"> <!-- Soll nur Platzreservieren -->
+                                                <label
+                                                    for="btbemerkungkd{{ i }}"
+                                                    class="form-label col-3"
+                                                    >Bauteil-Bemerkungen</label
+                                                >
+                                                
+                                                <div class="col">
+                                                    <input
+                                                        id="btbemerkungkd{{ i }}"
+                                                        name="btbemerkungkd{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm"
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                
+                                <hr>
+
+                                <div class="row">
+                                    <!-- BOM-Daten -->
+                                    <div class="col">
+                                        <h5>BOM-Daten</h5>
+                
+                                        <div class="row">
+                                            <label
+                                                for="bompos{{ i }}"
+                                                class="form-label col-3 align-left"
+                                                >POS</label
+                                            >
+    
+                                            <div class="col align-left">
+                                                <input
+                                                    id="bompos{{ i }}"
+                                                    name="bompos{{ i }}"
+                                                    type="text"
+                                                    class="form-control form-select-sm kompakter-50 align-right"
+                                                    [(ngModel)]="element.bompos"
+                                                    disabled
+                                                />
+                                            </div>
+                                            
+                                            @if(komprimiert){
+                                                <label
+                                                    for="anzprobgkomp{{ i }}"
+                                                    class="form-label col-3 align-right"
+                                                    >Komprimierte Anzahl pro BG</label
+                                                >
+
+                                                <div class="col align-right">
+                                                    <input
+                                                        id="anzprobgkomp{{ i }}"
+                                                        name="anzprobgkomp{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm kompakter-50 align-right"
+                                                        [(ngModel)]="element.anzprobgkomp"
+                                                        disabled
+                                                    />
+                                                </div>
+                                            }@else {
+                                                <label
+                                                    for="anzprobg{{ i }}"
+                                                    class="form-label col-3 align-right"
+                                                    >Anzahl pro BG</label
+                                                >
+
+                                                <div class="col align-right">
+                                                    <input
+                                                        id="anzprobg{{ i }}"
+                                                        name="anzprobg{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm kompakter-50 align-right"
+                                                        [(ngModel)]="element.anzprobg"
+                                                        disabled
+                                                    />
+                                                </div>
+                                            }
+                                        </div>
+            
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <label
+                                                    for="elbez{{ i }}"
+                                                    class="form-label"
+                                                    *ngIf="!komprimiert"
+                                                    >Elektrische Bezeichnung</label
+                                                >
+                                                <label
+                                                    for="elbezkomp{{ i }}"
+                                                    class="form-label"
+                                                    *ngIf="komprimiert"
+                                                    >komprimierte Elektrische Bezeichnung</label
+                                                >
+                                            </div>
+            
+                                            <div class="col">
+                                                <input
+                                                    id="elbez{{ i }}"
+                                                    name="elbez{{ i }}"
+                                                    type="text"
+                                                    class="form-control form-select-sm"
+                                                    *ngIf="!komprimiert"
+                                                    [(ngModel)]="element.elbez"
+                                                    disabled
+                                                />
+            
+                                                <input
+                                                    id="elbezkomp{{ i }}"
+                                                    name="elbezkomp{{ i }}"
+                                                    type="text"
+                                                    class="form-control form-select-sm"
+                                                    *ngIf="komprimiert"
+                                                    [(ngModel)]="element.elbezkomp"
+                                                    disabled
+                                                />
+                                            </div>
+                                        </div>
+            
+                                        <div class="row">
+                                            <label 
+                                                class="col-3"
+                                                for="slbemerkungkd{{ i }}" 
+                                                class="form-label col-3"
+                                                >BOM-Bemerkung</label
+                                            >
+                                            <div class="col">
+                                                <input
+                                                    id="slbemerkungkd{{ i }}"
+                                                    name="slbemerkungkd{{ i }}"
+                                                    type="text"
+                                                    class="form-control form-select-sm"
+                                                    [(ngModel)]="element.slbemerkungkd"
+                                                    disabled
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <!--
+                                        <div class="row m-2 border-success gap-1">
+                                            <div class="col"></div>
+            
+                                            <div class="col-1"></div>
+            
+                                            <div class="col"></div>
+                                            
+                                            <div class="col row"
+                                                style="margin-left: 0px; margin-right: 0px; padding-left: 0px; padding-right: 0px;"
+                                                matTooltip="Nur unter 'komprimiert' verfügbar!"
+                                                [matTooltipDisabled]="komprimiert"
+                                            >
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-secondary col"
+                                                    (click)="eine_verfuegbarkeit_pruefen(element)"
+                                                    [disabled]="!komprimiert || !bereit_alle_verfuegbarkeiten || !bereit_eine_verfuegbarkeit"
+                                                >
+                                                    @if(bereit_alle_verfuegbarkeiten && bereit_eine_verfuegbarkeit) {
+                                                        Verfügbarkeit Bauteil
+                                                    }@else {
+                                                        Bitte warten
+                                                    }
+                                                </button>
+                                            </div>
+            
+                                            <button
+                                                type="button"
+                                                class="btn btn-success col"
+                                                (click)="UpdateStueckliste(element)"
+                                            >
+                                                Änderungen speichern
+                                            </button>
+                                        </div>
+                                        -->
+        
+                                        <br>
+                                    </div>
+                                    
+                                    <!-- Quelle-Daten -->
+                                    @if (
+                                        element?.spinning !== true
+                                        && element?.bauteilquelle
+                                        && komprimiert 
+                                        && element['maxlbverfuegbar'] != QuellenStatus.NICHT_GEPRUEFT
+                                        && element['agbskd'] == Beistellung.BESCHAFFUNG 
+                                        && element['maxlbverfuegbar'] != QuellenStatus.ALTERNATIVE_NICHT_VERFUEGBAR 
+                                        && element['maxlbverfuegbar'] != QuellenStatus.NICHT_VERFUEGBAR 
+                                    ) {
+                                        <div class="col">
+                                            <h5>Quellen-Daten</h5>
+
+                                            <div class="row">
+                                                <label
+                                                    for="lagerbestand{{ i }}"
+                                                    class="form-label col-3"
+                                                    >Lagerbestand</label
+                                                >
+                                                
+                                                <div class="col">
+                                                    <input
+                                                        id="lagerbestand{{ i }}"
+                                                        name="lagerbestand{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm"
+                                                        [value]="element?.bauteilquelle?.verfuegbar"
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <label
+                                                    for="mindestbestellmenge{{ i }}"
+                                                    class="form-label col-3"
+                                                    >Mindestbestellmenge</label
+                                                >
+                                                
+                                                <div class="col">
+                                                    <input
+                                                        id="mindestbestellmenge{{ i }}"
+                                                        name="mindestbestellmenge{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm"
+                                                        [value]="element?.bauteilquelle?.mindestbestellmenge"
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <label
+                                                    for="vpemenge{{ i }}"
+                                                    class="form-label col-3"
+                                                    >VPE</label
+                                                >
+                                                
+                                                <div class="col">
+                                                    <input
+                                                        id="vpemenge{{ i }}"
+                                                        name="vpemenge{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm"
+                                                        [value]="element?.bauteilquelle?.vpemenge"
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div class="row align-items-center">
+                                                <label
+                                                    for="lieferzeit{{ i }}"
+                                                    class="form-label col-3"
+                                                    >Lieferzeit (in Tage)</label
+                                                >
+                                                
+                                                <div class="col">
+                                                    <input
+                                                        id="lieferzeit{{ i }}"
+                                                        name="lieferzeit{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm"
+                                                        [value]="element?.lieferZeit"
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div class="row align-items-center">
+                                                <label
+                                                    for="lieferzeit{{ i }}"
+                                                    class="form-label col-3"
+                                                    >Beschaffungsmenge</label
+                                                >
+                                                
+                                                <div class="col">
+                                                    <input
+                                                        id="lieferzeit{{ i }}"
+                                                        name="lieferzeit{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm"
+                                                        [value]="element?.beschaffungsmenge"
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div class="row align-items-center">
+                                                <label
+                                                    for="gesamtpreis{{ i }}"
+                                                    class="form-label col-3"
+                                                    >Gesamtpreis</label
+                                                >
+                                                
+                                                <div class="col">
+                                                    <input
+                                                        id="gesamtpreis{{ i }}"
+                                                        name="gesamtpreis{{ i }}"
+                                                        type="text"
+                                                        class="form-control form-select-sm"
+                                                        [value]="element?.betragbeschaffungsmenge | currency:'EUR':'symbol':'1.2-2':'de-DE'"
+                                                        disabled
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </td>
+            </ng-container>
+    
+            <tr mat-header-row *matHeaderRowDef="ErsteSelectedColoums" class="verkuerzen table-header sticky-table-header"></tr>
+            <tr mat-row *matRowDef="let element; columns: ErsteSelectedColoums;"
+                class="element-row verkuerzen mehrereZeilen ersteZeile"
+                [class.expanded-row]="expandedElement === element"
+                [ngClass]="{
+                    'hover': hoveredElement === element,
+                    'zwei_zeilen': 
+                        element?.spinning === true
+                        || !element?.bauteilquelle
+                        || !komprimiert 
+                        || element['maxlbverfuegbar'] == QuellenStatus.NICHT_GEPRUEFT
+                        || element['agbskd'] != Beistellung.BESCHAFFUNG 
+                        || (element['maxlbverfuegbar'] != QuellenStatus.ALTERNATIVE_VERFUEGBAR 
+                            && element['maxlbverfuegbar'] != QuellenStatus.ALTERNATIVE_VERFUEGBAR_IN
+                            && element['maxlbverfuegbar'] != QuellenStatus.ALTERNATIVE_NICHT_VERFUEGBAR)
+                }"
+                (click)="expandedElement = expandedElement === element ? null : element"
+                (mouseenter)="onMouseEnter(element)"
+                (mouseleave)="onMouseLeave()">
+            </tr>
+            <tr mat-row *matRowDef="let element; columns: ZweiteSelectedColoums;"
+                class="element-row verkuerzen mehrereZeilen zweiteZeile"
+                [class.expanded-row]="expandedElement === element"
+                [ngClass]="{
+                    'hover': hoveredElement === element, 
+                    'verstecken': 
+                        element?.spinning === true
+                        || !element?.bauteilquelle
+                        || !komprimiert
+                        || element['maxlbverfuegbar'] == QuellenStatus.NICHT_GEPRUEFT
+                        || element['agbskd'] != Beistellung.BESCHAFFUNG 
+                        || (element['maxlbverfuegbar'] != QuellenStatus.ALTERNATIVE_VERFUEGBAR 
+                            && element['maxlbverfuegbar'] != QuellenStatus.ALTERNATIVE_VERFUEGBAR_IN
+                            && element['maxlbverfuegbar'] != QuellenStatus.ALTERNATIVE_NICHT_VERFUEGBAR),
+                    'zwei_zeilen': 
+                        element?.spinning === true
+                        || !element?.bauteilquelle
+                        || !komprimiert
+                        || element['maxlbverfuegbar'] == QuellenStatus.NICHT_GEPRUEFT
+                        || element['agbskd'] != Beistellung.BESCHAFFUNG 
+                        || (element['maxlbverfuegbar'] != QuellenStatus.ALTERNATIVE_VERFUEGBAR 
+                            && element['maxlbverfuegbar'] != QuellenStatus.ALTERNATIVE_VERFUEGBAR_IN
+                            && element['maxlbverfuegbar'] != QuellenStatus.ALTERNATIVE_NICHT_VERFUEGBAR)
+                }"
+                (click)="expandedElement = expandedElement === element ? null : element"
+                (mouseenter)="onMouseEnter(element)"
+                (mouseleave)="onMouseLeave()">
+            </tr>
+            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+        </table>
+    }
+
+
+        
+    <mat-paginator 
+        [length]="selectedStueckliste.data.length"
+        [pageSize]="25"
+        [pageSizeOptions]="[5, 10, 25, selectedStueckliste.data.length]"
+        [ngClass]="{'verstecken': !bereit}">
+    </mat-paginator>
+
+    <br>
+
+    @if(bereit){
+        <div class="row margin_right_0 margin_left_0">
+            @if (neues_projekt || neuer_auftrag) {
+                <!--
+                <button
+                    type="button"
+                    class="btn btn-secondary col-2"
+                    (click)="zurueck()"
+                >Zurück</button>
+                -->
+                <mpl-pfeil-links class="col-auto" (click_event)="zurueck()"></mpl-pfeil-links>
+
+                <div class="col"></div>
+
+                <!--
+                <button
+                    type="button"
+                    class="btn btn-success col-2"
+                    (click)="weiter()"
+                    [disabled]="bitte_warten_weiter"
+                >
+                    @if(bitte_warten_weiter){
+                        Bitte warten ...
+                    }@else {
+                        Weiter
+                    }
+                </button>
+                -->
+                <mpl-pfeil-rechts class="col-auto" (click_event)="weiter()" [disabled]="bitte_warten_weiter"></mpl-pfeil-rechts>
+            }@else {
+                <!--
+                <button
+                    type="button"
+                    class="btn btn-secondary col-2"
+                    (click)="zurueck()"
+                >Zurück</button>
+                -->
+                
+                <mpl-pfeil-links class="col-auto" (click_event)="zurueck()"></mpl-pfeil-links>
+            }
+        </div>
+    }
+
+    <br>
+    
+
+</div>

@@ -1,0 +1,57 @@
+@import "../../../styles/formular.scss";
+@import "../../../styles/fehler.scss";
+
+.pdf {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+        
+  width: 75vw; 
+  height: 1100px;
+
+  margin-bottom: 0px;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-space-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.flex-end {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.custom-button {
+  background-color: $erste_primary_farbe;
+  border-radius: 50%;
+}
+
+.custom-button:hover {
+  background-color: $zweite_primary_farbe; /* Darker color when hovered */
+}
+
+.hintergrund_grau {
+  background-color: gray;
+  color: white;
+  padding-left:   12px;
+  padding-right:  12px;
+  padding-top:    7px;
+  padding-bottom: 7px;
+}
+
+.padding_left_right {
+  padding-left:   12px;
+  padding-right:  12px;
+}
+
+.margin_minus_24_right {
+  margin-right: -24px;
+}

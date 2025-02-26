@@ -1,0 +1,386 @@
+<div class="container-xl">
+  <h3 class="row">
+    <div class="col" style="height: 38px;"> 
+      My Bestellungen 
+      @if(bereit){
+        ({{ bestellungen.data.length }})
+      }
+    </div>
+  </h3>
+
+  <div class="sticky">
+    <mpl-ladebalken [falsches_laden_beginnen]="!(bereit && !spinning)"></mpl-ladebalken>
+
+    <div class="row sticky" style="gap: 7px; margin-right: 0">
+      <!-- Suchfelder -->
+      <!--
+      <label
+        for="filterAll"
+        class="form-label col-1"
+        >Suchen</label
+      >
+      <div class="col-2">
+        <input
+          name="filterAll"
+          type="text"
+          class="form-control form-select-sm"
+          (keyup)="applyFilter($event)"
+          [(ngModel)]="filterAll"
+        />
+      </div>
+      -->
+      <div class="col-1"></div>
+      <div class="col-2"></div>
+
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+
+      <!--
+      <button
+          type="button"
+          class="btn btn-secondary col"
+          (click)="loeschen($event)"
+          [disabled]="selection.selected.length === 0"
+      >
+          @if (selection.selected.length === 0 || selection.selected.length === 1) {
+              Angebot löschen
+          }@else if (selection.selected.length > 1 && selection.selected.length !== auftraege.data.length) {
+              {{ selection.selected.length }} Aufträge löschen
+          }@else{
+              Alles löschen
+          }
+      </button>
+      -->
+      <div class="col"></div>
+
+      <div class="col"></div>
+    </div>
+  </div>
+
+  <br>
+
+  @if(!bereit){
+    <div style="
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 25vh;
+      ">
+        <mat-spinner></mat-spinner>
+    </div>
+  }@else{
+    <table mat-table
+      [dataSource]="bestellungen" 
+      [trackBy]="trackByFn"
+      multiTemplateDataRows>
+      <!-- 
+        Die Spalten der Tabelle werden mit der Classe matColoumDef definiert und über ein Array in <tr> verwendet.  
+      -->
+
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="bestellungID">
+        <th mat-header-cell *matHeaderCellDef> Bestell Nr. </th>
+        <td mat-cell *matCellDef="let element"> {{element["bestellungID"]}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="aunr">
+        <th mat-header-cell *matHeaderCellDef> Angebots Nr. </th>
+        <td mat-cell *matCellDef="let element"> {{element["aunr"]}} </td>
+      </ng-container>
+      <ng-container matColumnDef="beschreibung">
+        <th mat-header-cell *matHeaderCellDef> Beschreibung </th>
+        <td mat-cell *matCellDef="let element"> {{element["beschreibung"]}} </td>
+      </ng-container>
+      <ng-container matColumnDef="bgnrkd">
+        <th mat-header-cell *matHeaderCellDef> Baugruppe </th>
+        <td mat-cell *matCellDef="let element"> {{element["bgnrkd"]}} </td>
+      </ng-container>
+      <ng-container matColumnDef="bgbezeichnungkd">
+        <th mat-header-cell *matHeaderCellDef> Bg-Bezeichnung </th>
+        <td mat-cell *matCellDef="let element"> {{element["bgbezeichnungkd"]}} </td>
+      </ng-container>
+      
+      <ng-container matColumnDef="bestelldatum">
+        <th mat-header-cell *matHeaderCellDef> Bestelldatum </th>
+        <td mat-cell *matCellDef="let element"> 
+          {{ element['bestelldatum'] | date:"dd.MM.yyyy" }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let element"> 
+          @if( element['status'] === BestellungStatus.BESTELLT ){
+            Bestellt
+          }@else if( element['status'] === BestellungStatus.BESTAETIGT ){
+            Bestätigt
+          }@else if( element['status'] === BestellungStatus.WARTET_MATERIAL ){
+            Wartet auf Material
+          }@else if( element['status'] === BestellungStatus.IN_PRODUKTION ){
+            In Produktion
+          }@else if( element['status'] === BestellungStatus.VERSENDET ){
+            Versendet
+          }
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="bestaetigt">
+        <th mat-header-cell *matHeaderCellDef> Bestätigt </th>
+        <td mat-cell *matCellDef="let element"> 
+          @if(element["bestaetigt"] == 1){
+            Ja
+          }@else if(element["bestaetigt"] == 0){
+            Nein
+          }
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="bestaetigtAm">
+        <th mat-header-cell *matHeaderCellDef> Bestätigt am </th>
+        <td mat-cell *matCellDef="let element"> {{ element["bestaetigtAm"] }} </td>
+      </ng-container>
+      <ng-container matColumnDef="bestaetigtVon">
+        <th mat-header-cell *matHeaderCellDef> Bestätigt von </th>
+        <td mat-cell *matCellDef="let element"> {{ element["bestaetigtVon"] }} </td>
+      </ng-container>
+      <ng-container matColumnDef="bestellmenge">
+        <th mat-header-cell *matHeaderCellDef> Bestellmenge </th>
+        <td mat-cell *matCellDef="let element"> {{ element["bestellmenge"] }} </td>
+      </ng-container>
+      <ng-container matColumnDef="liefertermin">
+        <th mat-header-cell *matHeaderCellDef> Liefertermin </th>
+        <td mat-cell *matCellDef="let element"> {{ element["liefertermin"] | date:"dd.MM.yyyy" }} </td>
+      </ng-container>
+      <ng-container matColumnDef="gesamtpreis">
+        <th mat-header-cell *matHeaderCellDef> Gesamtpreis </th>
+        <td mat-cell *matCellDef="let element"> {{ element["gesamtpreis"] | currency:'EUR':'symbol':'1.2-2':'de-DE' }} </td>
+      </ng-container>
+
+      <!-- Löschen Knopf mit Mülltonnen Symbol -->
+      <ng-container matColumnDef="loeschen">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-icon 
+            class="clickable main_muelltonne_anpasssen"
+            (click)="BestellungLoeschen($event)"
+          >
+            delete
+          </mat-icon>
+        </th>
+        <td mat-cell *matCellDef="let element"> 
+          <mat-icon 
+            class="clickable muelltonne_anpasssen"
+            (click)="BestellungLoeschen($event, element)"
+          >
+            delete
+          </mat-icon>
+        </td>
+      </ng-container>
+
+      <!-- Suche -->
+      <ng-container matColumnDef="suche">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="vertical_center_container">
+            <label
+                for="filterAll"
+                class=""
+                ><mat-icon>search</mat-icon></label
+            >
+            <input
+                id="filterAll"
+                name="filterAll"
+                type="text"
+                class="form-control form-select-sm"
+                (keyup)="applyFilter($event)"
+                style="width: 100px;"
+            />
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element">
+        </td>
+      </ng-container>
+
+      <!-- Spalte mit dem Pfeil Symbol -->
+      <ng-container matColumnDef="expand">
+        <th mat-header-cell *matHeaderCellDef>
+          <span class="vertical_center_container">
+            <label
+              for="filterAll"
+              class=""
+              ><mat-icon>search</mat-icon></label
+            >
+            <input
+              id="filterAll"
+              name="filterAll"
+              type="text"
+              class="form-control form-select-sm"
+              (keyup)="applyFilter($event)"
+              style="width: 100px;"
+            />
+          </span>
+        </th>
+        <td mat-cell *matCellDef="let element" style="text-align:right; width: 10px;">
+          <div mat-icon-button (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+            @if(expandedElement !== element){
+              <mat-icon>keyboard_arrow_down</mat-icon>
+            }@else if(expandedElement === element){
+              <mat-icon>keyboard_arrow_up</mat-icon>
+            }
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+      <ng-container matColumnDef="detail" >
+        <td mat-cell 
+          *matCellDef="let element; let i = dataIndex" 
+          [attr.colspan]="columnsToDisplay.length"
+          class="no-padding"
+        >
+          <div class="element-detail" [@detailExpand]="true ? 'expanded' : 'collapsed'">
+            <form #auftragnform="ngForm">
+              <div class="box-anpassen bestellung" style="margin-bottom: 3px;">
+                <div class="container">
+                  <div class="row" style="margin-top: -20px !important;">
+                    <div class="col">
+                      <p-timeline [value]="BestellungStatusArray" layout="horizontal">
+                        <ng-template pTemplate="content" let-status>
+                          <div 
+                            [class.derzeitige_status]="element.status == status"
+                            [class.vergangene_status]="element.status > status"
+                            [class.bevorstehender_status]="element.status < status"
+                          >
+                            @if(status == BestellungStatus.BESTELLT){
+                              Bestellt
+                            }@else if (status == BestellungStatus.BEZAHLT || status == BestellungStatus.NICHT_BEZAHLT) {
+                              @if(status == BestellungStatus.BEZAHLT){
+                                Bezahlt
+                              }@else if(status == BestellungStatus.NICHT_BEZAHLT) {
+                                Nicht Bezahlt
+                              }
+                            }@else if (status == BestellungStatus.BESTAETIGT) {
+                              Bestätigt
+                            }@else if (status == BestellungStatus.WARTET_MATERIAL) {
+                              Wartet auf Material
+                            }@else if (status == BestellungStatus.IN_PRODUKTION) {
+                              In Produktion
+                            }@else if (status == BestellungStatus.VERSENDET) {
+                              Versendet
+                            }@else {
+                              Error
+                            }
+                          </div>
+                        </ng-template>
+                      </p-timeline>
+                    </div>
+
+                    <div class="col-1 d-flex justify-content-center align-items-center">
+                      <button mat-icon-button (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                        @if(expandedElement !== element){
+                          <mat-icon>keyboard_arrow_down</mat-icon>
+                        }@else if(expandedElement === element){
+                          <mat-icon>keyboard_arrow_up</mat-icon>
+                        }
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+      <ng-container matColumnDef="expandedDetail" >
+        <td mat-cell 
+          *matCellDef="let element; let i = dataIndex" 
+          [attr.colspan]="columnsToDisplay.length"
+          class="no-padding"
+        >
+          <div class="element-detail" [@detailExpand]="expandedElement === element ? 'expanded' : 'collapsed'">
+            <form #auftragnform="ngForm">
+              <div class="box-anpassen bestellung" style="margin-bottom: 10px;">
+                <div class="container">
+                  <div class="row m-2 border-success gap-2">
+                    <button
+                      type="button"
+                      class="btn btn-secondary col"
+                      (click)="ViewBaugruppe()"
+                    >
+                      Baugruppe anzeigen
+                    </button>
+                    
+                    <button
+                      type="button"
+                      class="btn btn-secondary col"
+                      (click)="ViewLeiterplattendaten(element.bestellungID)"
+                    >
+                      Leiterplatte anzeigen
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-secondary col"
+                      (click)="ViewAuftragsStueckliste(element.bestellungID)"
+                    >
+                      BOM anzeigen
+                    </button>
+
+                    @if(element?.rechnungurl){
+                      <button
+                        type="button"
+                        class="btn btn-secondary col"
+                        (click)="Umleiten_nach_Stripe_Rechnung(element.rechnungurl)"
+                      >
+                        Rechnung anzeigen
+                      </button>
+                    }@else {
+                      <div class="col"></div>
+                    }
+                    <!--
+                    <button
+                      type="button"
+                      class="btn btn-secondary col"
+                      (click)="Umleiten_nach_Dateien(element.bestellungID)"
+                    >
+                      Dateien anzeigen
+                    </button>
+                    -->
+                    <div class="col"></div>
+                </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnsToDisplay" class="verkuerzen table-header sticky-table-header"></tr>
+      <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="element-row verkuerzen Graue_Zeile deactivate_hover" ></tr>
+      <tr mat-row *matRowDef="let element; columns: ['detail']" class="detail-row Graue_Detail_Zeile"></tr>
+      <tr mat-row *matRowDef="let element; columns: ['expandedDetail']" class="detail-row"></tr>
+    </table>
+  }
+
+  <mat-paginator [length]="bestellungen.data.length"
+      [pageSize]="25"
+      [pageSizeOptions]="[5, 10, 25, bestellungen.data.length]"
+      [ngClass]="{'verstecken': !bereit}">
+  </mat-paginator>
+
+  <br>
+
+
+</div>

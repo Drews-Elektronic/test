@@ -1,0 +1,487 @@
+<br>
+<br>
+<br>
+<br>
+
+
+@if(bitte_warten){
+    <mpl-grosser-spinner></mpl-grosser-spinner>
+}@else{
+    <form
+        class="container-xl"
+        *ngIf="getSuccess"
+        [formGroup]="form"
+        (ngSubmit)="UpdateKunde()"
+    >
+        <div>
+            <h3> Meine Daten </h3>
+
+            <div class="row">
+                <div class="col">
+                    <label for="firma" class="form-label fw-bold">Firma:</label>
+                    <input
+                        id="firma"
+                        name="firma"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="firma"
+                    />
+                </div>
+                <div class="col">
+                    <label for="kdnr" class="form-label fw-bold"
+                        >Kundennummer:</label
+                    >
+                    <input
+                        id="kdnr"
+                        name="kdnr"
+                        type="number"
+                        class="form-control form-select-sm"
+                        formControlName="kdnr"
+                    />
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="anrede" class="form-label fw-bold"
+                        >* Anrede:</label
+                    >
+                    <select
+                        id="anrede"
+                        name="anrede"
+                        class="form-select form-select-sm"
+                        formControlName="anrede"
+                    >
+                        <option value="Herr">Herr</option>
+                        <option value="Frau">Frau</option>
+                        <option value="Divers">Divers</option>
+                    </select>
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="firstName" class="form-label fw-bold"
+                        >* Vorname:</label
+                    >
+                    <input
+                        id="firstName"
+                        name="firstName"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="firstName"
+                    />
+                </div>
+                <div class="col">
+                    <label for="lastName" class="form-label fw-bold"
+                        >* Nachname:</label
+                    >
+                    <input
+                        id="lastName"
+                        name="lastName"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="lastName"
+                    />
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="strasse" class="form-label fw-bold"
+                        >* Stra&szlig;e:</label
+                    >
+                    <input
+                        id="strasse"
+                        name="strasse"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="strasse"
+                    />
+                </div>
+                <div class="col">
+                    <label for="plz" class="form-label fw-bold">* PLZ:</label>
+                    <input
+                        id="plz"
+                        name="plz"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="plz"
+                    />
+                </div>
+                <div class="col">
+                    <label for="ort" class="form-label fw-bold">* Ort:</label>
+                    <input
+                        id="ort"
+                        name="ort"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="ort"
+                    />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="land" class="form-label fw-bold">* Land:</label>
+                    <input
+                        id="land"
+                        name="land"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="land"
+                    />
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="email" class="form-label fw-bold">* E-Mail:</label>
+                    <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        class="form-control form-select-sm"
+                        formControlName="email"
+                    />
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="tel" class="form-label fw-bold"
+                        >* Telefonnummer:</label
+                    >
+                    <input
+                        id="tel"
+                        name="tel"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="tel"
+                    />
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <mat-checkbox
+                    [checked]="check_checkbox_andereLieferadresse()"
+                    (change)="update_checkbox_andereLieferadresse($event.checked)"
+                >
+                    <span class="fw-bold" style="font-size: 16px;"
+                        >Andere Lieferadresse:</span
+                    >
+                </mat-checkbox>
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+
+        <div *ngIf="form?.get('andereLieferadresse')?.value == 'true'">
+            <div class="row">
+                <div class="col">
+                    <label for="lianrede" class="form-label fw-bold"
+                        >Anrede:</label
+                    >
+                    <select
+                        id="lianrede"
+                        name="lianrede"
+                        class="form-select"
+                        formControlName="lianrede"
+                    >
+                        <option value="Herr">Herr</option>
+                        <option value="Frau">Frau</option>
+                        <option value="Divers">Divers</option>
+                    </select>
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="lifirstName" class="form-label fw-bold"
+                        >Vorname:</label
+                    >
+                    <input
+                        id="lifirstName"
+                        name="lifirstName"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="lifirstName"
+                    />
+                </div>
+                <div class="col">
+                    <label for="lilastName" class="form-label fw-bold"
+                        >Nachname:</label
+                    >
+                    <input
+                        id="lilastName"
+                        name="lilastName"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="lilastName"
+                    />
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="listrasse" class="form-label fw-bold"
+                        >Stra&szlig;e:</label
+                    >
+                    <input
+                        id="listrasse"
+                        name="listrasse"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="listrasse"
+                    />
+                </div>
+                <div class="col">
+                    <label for="liplz" class="form-label fw-bold">PLZ:</label>
+                    <input
+                        id="liplz"
+                        name="liplz"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="liplz"
+                    />
+                </div>
+                <div class="col">
+                    <label for="liort" class="form-label fw-bold">Ort:</label>
+                    <input
+                        id="liort"
+                        name="liort"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="liort"
+                    />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="liland" class="form-label fw-bold">Land:</label>
+                    <input
+                        id="liland"
+                        name="liland"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="liland"
+                    />
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="limail" class="form-label fw-bold"
+                        >E-Mail:</label
+                    >
+                    <input
+                        id="limail"
+                        name="limail"
+                        type="email"
+                        class="form-control form-select-sm"
+                        formControlName="limail"
+                    />
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="litel" class="form-label fw-bold"
+                        >Telefonnummer:</label
+                    >
+                    <input
+                        id="litel"
+                        name="litel"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="litel"
+                    />
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <mat-checkbox
+                    [checked]="check_checkbox_andereRechnungsadresse()"
+                    (change)="update_checkbox_andereRechnungsadresse($event.checked)"
+                >
+                    <span class="fw-bold" style="font-size: 16px;"
+                        >Andere Rechnungsadresse:</span
+                    >
+                </mat-checkbox>
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+
+        <div *ngIf="form?.get('andereRechnungsadresse')?.value == 'true'">
+            <div class="row">
+                <div class="col">
+                    <label for="reanrede" class="form-label fw-bold"
+                        >Anrede:</label
+                    >
+                    <select
+                        id="reanrede"
+                        name="reanrede"
+                        class="form-select"
+                        formControlName="reanrede"
+                    >
+                        <option value="Herr">Herr</option>
+                        <option value="Frau">Frau</option>
+                        <option value="Divers">Divers</option>
+                    </select>
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="refirstName" class="form-label fw-bold"
+                        >Vorname:</label
+                    >
+                    <input
+                        id="refirstName"
+                        name="refirstName"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="refirstName"
+                    />
+                </div>
+                <div class="col">
+                    <label for="relastName" class="form-label fw-bold"
+                        >Nachname:</label
+                    >
+                    <input
+                        id="relastName"
+                        name="relastName"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="relastName"
+                    />
+                </div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="restrasse" class="form-label fw-bold"
+                        >Stra&szlig;e:</label
+                    >
+                    <input
+                        id="restrasse"
+                        name="restrasse"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="restrasse"
+                    />
+                </div>
+                <div class="col">
+                    <label for="replz" class="form-label fw-bold">PLZ:</label>
+                    <input
+                        id="replz"
+                        name="replz"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="replz"
+                    />
+                </div>
+                <div class="col">
+                    <label for="reort" class="form-label fw-bold">Ort:</label>
+                    <input
+                        id="reort"
+                        name="reort"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="reort"
+                    />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="reland" class="form-label fw-bold">Land:</label>
+                    <input
+                        id="reland"
+                        name="reland"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="reland"
+                    />
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="remail" class="form-label fw-bold"
+                        >E-Mail:</label
+                    >
+                    <input
+                        id="remail"
+                        name="remail"
+                        type="email"
+                        class="form-control form-select-sm"
+                        formControlName="remail"
+                    />
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="retel" class="form-label fw-bold"
+                        >Telefonnummer:</label
+                    >
+                    <input
+                        id="retel"
+                        name="retel"
+                        type="text"
+                        class="form-control form-select-sm"
+                        formControlName="retel"
+                    />
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <div class="row">
+            <div class="col-2"></div>
+            
+            <div class="col"></div>
+
+            @if(form.valid){
+                <button 
+                    type="submit" 
+                    class="btn btn-success col-2"
+                    [disabled]="form.invalid || bitte_warten_aktualisieren"
+                >
+                    @if (bitte_warten_aktualisieren) {
+                        Bitte warten ...
+                    }@else {
+                        Aktualisieren
+                    }
+                </button>
+            }
+        </div>
+
+        <br>
+        <br>
+
+    </form>
+}
+
+

@@ -1,0 +1,864 @@
+<mpl-formular-header CurrentTitle="Neuen Benutzer anlegen">
+</mpl-formular-header>
+
+<div class="container-xl">
+    <form
+        #kundendatenform="ngForm"
+        (ngSubmit)="AddKunden()"
+    >
+        <div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="firma" class="col-form-label fw-bold">Firma:</label>
+                    <input
+                        id="firma"
+                        name="firma"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.firma"
+                    />
+                </div>
+                <div class="m-1 col-md">
+                </div>
+                <div class="m-1 col-md"></div>
+            </div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="anrede" class="col-form-label fw-bold"
+                        >Anrede:</label
+                    >
+                    <select
+                        id="anrede"
+                        name="anrede"
+                        class="form-select"
+                        [(ngModel)]="form.anrede"
+                    >
+                        <option value="Herr">Herr</option>
+                        <option value="Frau">Frau</option>
+                        <option value="Divers">Divers</option>
+                    </select>
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+            </div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="vorname" class="col-form-label fw-bold"
+                        >Vorname:</label
+                    >
+                    <input
+                        id="vorname"
+                        name="vorname"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.vorname"
+                    />
+                </div>
+                <div class="m-1 col-md">
+                    <label for="nachname" class="col-form-label fw-bold"
+                        >Nachname:</label
+                    >
+                    <input
+                        id="nachname"
+                        name="nachname"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.nachname"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+            </div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="strasse" class="col-form-label fw-bold"
+                        >Stra&szlig;e:</label
+                    >
+                    <input
+                        id="strasse"
+                        name="strasse"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.strasse"
+                    />
+                </div>
+                <div class="m-1 col-md">
+                    <label for="plz" class="col-form-label fw-bold">PLZ:</label>
+                    <input
+                        id="plz"
+                        name="plz"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.plz"
+                    />
+                </div>
+                <div class="m-1 col-md">
+                    <label for="ort" class="col-form-label fw-bold">Ort:</label>
+                    <input
+                        id="ort"
+                        name="ort"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.ort"
+                    />
+                </div>
+            </div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="land" class="col-form-label fw-bold">Land:</label>
+                    <input
+                        id="land"
+                        name="land"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.land"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+            </div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="mail" class="col-form-label fw-bold">E-Mail:</label>
+                    <input
+                        id="mail"
+                        name="mail"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.mail"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+            </div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="tel" class="col-form-label fw-bold"
+                        >Telefonnummer:</label
+                    >
+                    <input
+                        id="tel"
+                        name="tel"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.tel"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="m-1 col-md">
+                <h4>Lieferadresse </h4>
+            </div>
+            <div class="m-1 col-md"></div>
+            <div class="m-1 col-md"></div>
+        </div>
+
+        <div class="row">
+                <div class="m-1 col-md">
+                    <label for="lianrede" class="col-form-label fw-bold"
+                        >Anrede:</label
+                    >
+                    <select
+                        id="lianrede"
+                        name="lianrede"
+                        class="form-select"
+                        [(ngModel)]="form.lianrede"
+                    >
+                        <option value="Herr">Herr</option>
+                        <option value="Frau">Frau</option>
+                        <option value="Divers">Divers</option>
+                    </select>
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+                <div class="m-1 col-md">
+                    <label for="livorname" class="col-form-label fw-bold"
+                        >Vorname:</label
+                    >
+                    <input
+                        id="livorname"
+                        name="livorname"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.livorname"
+                    />
+                </div>
+                <div class="m-1 col-md">
+                    <label for="linachname" class="col-form-label fw-bold"
+                        >Nachname:</label
+                    >
+                    <input
+                        id="linachname"
+                        name="linachname"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.linachname"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+                <div class="m-1 col-md">
+                    <label for="listrasse" class="col-form-label fw-bold"
+                        >Stra&szlig;e:</label
+                    >
+                    <input
+                        id="listrasse"
+                        name="listrasse"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.listrasse"
+                    />
+                </div>
+                <div class="m-1 col-md">
+                    <label for="liplz" class="col-form-label fw-bold">PLZ:</label>
+                    <input
+                        id="liplz"
+                        name="liplz"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.liplz"
+                    />
+                </div>
+                <div class="m-1 col-md">
+                    <label for="liort" class="col-form-label fw-bold">Ort:</label>
+                    <input
+                        id="liort"
+                        name="liort"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.liort"
+                    />
+                </div>
+        </div>
+        <div class="row">
+                <div class="m-1 col-md">
+                    <label for="liland" class="col-form-label fw-bold">Land:</label>
+                    <input
+                        id="liland"
+                        name="liland"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.liland"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+                <div class="m-1 col-md">
+                    <label for="limail" class="col-form-label fw-bold"
+                        >E-Mail:</label
+                    >
+                    <input
+                        id="limail"
+                        name="limail"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.limail"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+                <div class="m-1 col-md">
+                    <label for="litel" class="col-form-label fw-bold"
+                        >Telefonnummer:</label
+                    >
+                    <input
+                        id="litel"
+                        name="litel"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.litel"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+        </div>
+
+        <div class="row">
+            <div class="m-1 col-md">
+                <h4>Rechnungsadresse</h4>
+            </div>
+            <div class="m-1 col-md"></div>
+            <div class="m-1 col-md"></div>
+        </div>
+
+        <div class="row">
+                <div class="m-1 col-md">
+                    <label for="reanrede" class="col-form-label fw-bold"
+                        >Anrede:</label
+                    >
+                    <select
+                        id="reanrede"
+                        name="reanrede"
+                        class="form-select"
+                        [(ngModel)]="form.reanrede"
+                    >
+                        <option value="Herr">Herr</option>
+                        <option value="Frau">Frau</option>
+                        <option value="Divers">Divers</option>
+                    </select>
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+                <div class="m-1 col-md">
+                    <label for="revorname" class="col-form-label fw-bold"
+                        >Vorname:</label
+                    >
+                    <input
+                        id="revorname"
+                        name="revorname"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.revorname"
+                    />
+                </div>
+                <div class="m-1 col-md">
+                    <label for="renachname" class="col-form-label fw-bold"
+                        >Nachname:</label
+                    >
+                    <input
+                        id="renachname"
+                        name="renachname"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.renachname"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+                <div class="m-1 col-md">
+                    <label for="restrasse" class="col-form-label fw-bold"
+                        >Stra&szlig;e:</label
+                    >
+                    <input
+                        id="restrasse"
+                        name="restrasse"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.restrasse"
+                    />
+                </div>
+                <div class="m-1 col-md">
+                    <label for="replz" class="col-form-label fw-bold">PLZ:</label>
+                    <input
+                        id="replz"
+                        name="replz"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.replz"
+                    />
+                </div>
+                <div class="m-1 col-md">
+                    <label for="reort" class="col-form-label fw-bold">Ort:</label>
+                    <input
+                        id="reort"
+                        name="reort"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.reort"
+                    />
+                </div>
+        </div>
+        <div class="row">
+                <div class="m-1 col-md">
+                    <label for="reland" class="col-form-label fw-bold">Land:</label>
+                    <input
+                        id="reland"
+                        name="reland"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.reland"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+                <div class="m-1 col-md">
+                    <label for="remail" class="col-form-label fw-bold"
+                        >E-Mail:</label
+                    >
+                    <input
+                        id="remail"
+                        name="remail"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.remail"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+                <div class="m-1 col-md">
+                    <label for="retel" class="col-form-label fw-bold"
+                        >Telefonnummer:</label
+                    >
+                    <input
+                        id="retel"
+                        name="retel"
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="form.retel"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+        </div>
+
+        <div class="row">
+            <button
+                type="button"
+                class="col-md m-2 btn btn-secondary"
+                (click)="zurueck()"
+            >
+                Abbrechen
+            </button>
+            <div class="col-md"></div>
+            <button type="submit" class="col-md m-2 btn btn-success">
+                Anlegen
+            </button>
+        </div>
+    </form>
+</div>
+
+
+<!--
+<div class="container">
+    <h3>{{ title }}</h3>
+    <form
+        (ngSubmit)="UpdateKunde()"
+    >
+        <div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="firma" class="col-form-label fw-bold">Firma:</label>
+                    <input
+                        id="firma"
+                        name="firma"
+                        type="text"
+                        class="form-control"
+                        formControlName="firma"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+            </div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="anrede" class="col-form-label fw-bold"
+                        >Anrede:</label
+                    >
+                    <select
+                        id="anrede"
+                        name="anrede"
+                        class="form-select"
+                        formControlName="anrede"
+                    >
+                        <option value="Herr">Herr</option>
+                        <option value="Frau">Frau</option>
+                        <option value="Divers">Divers</option>
+                    </select>
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+            </div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="vorname" class="col-form-label fw-bold"
+                        >Vorname:</label
+                    >
+                    <input
+                        id="vorname"
+                        name="vorname"
+                        type="text"
+                        class="form-control"
+                        formControlName="vorname"
+                    />
+                </div>
+                <div class="m-1 col-md">
+                    <label for="nachname" class="col-form-label fw-bold"
+                        >Nachname:</label
+                    >
+                    <input
+                        id="nachname"
+                        name="nachname"
+                        type="text"
+                        class="form-control"
+                        formControlName="nachname"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+            </div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="strasse" class="col-form-label fw-bold"
+                        >Stra&szlig;e:</label
+                    >
+                    <input
+                        id="strasse"
+                        name="strasse"
+                        type="text"
+                        class="form-control"
+                        formControlName="strasse"
+                    />
+                </div>
+                <div class="m-1 col-md">
+                    <label for="plz" class="col-form-label fw-bold">PLZ:</label>
+                    <input
+                        id="plz"
+                        name="plz"
+                        type="text"
+                        class="form-control"
+                        formControlName="plz"
+                    />
+                </div>
+                <div class="m-1 col-md">
+                    <label for="ort" class="col-form-label fw-bold">Ort:</label>
+                    <input
+                        id="ort"
+                        name="ort"
+                        type="text"
+                        class="form-control"
+                        formControlName="ort"
+                    />
+                </div>
+            </div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="land" class="col-form-label fw-bold">Land:</label>
+                    <input
+                        id="land"
+                        name="land"
+                        type="text"
+                        class="form-control"
+                        formControlName="land"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+            </div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="mail" class="col-form-label fw-bold">E-Mail:</label>
+                    <input
+                        id="mail"
+                        name="mail"
+                        type="text"
+                        class="form-control"
+                        formControlName="mail"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+            </div>
+            <div class="row">
+                <div class="m-1 col-md">
+                    <label for="tel" class="col-form-label fw-bold"
+                        >Telefonnummer:</label
+                    >
+                    <input
+                        id="tel"
+                        name="tel"
+                        type="text"
+                        class="form-control"
+                        formControlName="tel"
+                    />
+                </div>
+                <div class="m-1 col-md"></div>
+                <div class="m-1 col-md"></div>
+            </div>
+        </div>
+        <div class="row">
+            <h4>Lieferadresse </h4>
+            <div class="m-1 col-md"></div>
+            <div class="m-1 col-md"></div>
+        </div>
+
+        <div class="row">
+            <div class="m-1 col-md">
+                <label for="lianrede" class="col-form-label fw-bold"
+                    >Anrede:</label
+                >
+                <select
+                    id="lianrede"
+                    name="lianrede"
+                    class="form-select"
+                    formControlName="lianrede"
+                >
+                    <option value="Herr">Herr</option>
+                    <option value="Frau">Frau</option>
+                    <option value="Divers">Divers</option>
+                </select>
+            </div>
+            <div class="m-1 col-md"></div>
+            <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+            <div class="m-1 col-md">
+                <label for="livorname" class="col-form-label fw-bold"
+                    >Vorname:</label
+                >
+                <input
+                    id="livorname"
+                    name="livorname"
+                    type="text"
+                    class="form-control"
+                    formControlName="livorname"
+                />
+            </div>
+            <div class="m-1 col-md">
+                <label for="linachname" class="col-form-label fw-bold"
+                    >Nachname:</label
+                >
+                <input
+                    id="linachname"
+                    name="linachname"
+                    type="text"
+                    class="form-control"
+                    formControlName="linachname"
+                />
+            </div>
+            <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+            <div class="m-1 col-md">
+                <label for="listrasse" class="col-form-label fw-bold"
+                    >Stra&szlig;e:</label
+                >
+                <input
+                    id="listrasse"
+                    name="listrasse"
+                    type="text"
+                    class="form-control"
+                    formControlName="listrasse"
+                />
+            </div>
+            <div class="m-1 col-md">
+                <label for="liplz" class="col-form-label fw-bold">PLZ:</label>
+                <input
+                    id="liplz"
+                    name="liplz"
+                    type="text"
+                    class="form-control"
+                    formControlName="liplz"
+                />
+            </div>
+            <div class="m-1 col-md">
+                <label for="liort" class="col-form-label fw-bold">Ort:</label>
+                <input
+                    id="liort"
+                    name="liort"
+                    type="text"
+                    class="form-control"
+                    formControlName="liort"
+                />
+            </div>
+        </div>
+        <div class="row">
+            <div class="m-1 col-md">
+                <label for="liland" class="col-form-label fw-bold">Land:</label>
+                <input
+                    id="liland"
+                    name="liland"
+                    type="text"
+                    class="form-control"
+                    formControlName="liland"
+                />
+            </div>
+            <div class="m-1 col-md"></div>
+            <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+            <div class="m-1 col-md">
+                <label for="limail" class="col-form-label fw-bold"
+                    >E-Mail:</label
+                >
+                <input
+                    id="limail"
+                    name="limail"
+                    type="text"
+                    class="form-control"
+                    formControlName="limail"
+                />
+            </div>
+            <div class="m-1 col-md"></div>
+            <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+            <div class="m-1 col-md">
+                <label for="litel" class="col-form-label fw-bold"
+                    >Telefonnummer:</label
+                >
+                <input
+                    id="litel"
+                    name="litel"
+                    type="text"
+                    class="form-control"
+                    formControlName="litel"
+                />
+            </div>
+            <div class="m-1 col-md"></div>
+            <div class="m-1 col-md"></div>
+        </div>
+
+        <div class="row">
+            <div class="m-1 col-md">
+                <h4>Rechnungsadresse</h4>
+            </div>
+            <div class="m-1 col-md"></div>
+            <div class="m-1 col-md"></div>
+        </div>
+
+        <div class="row">
+            <div class="m-1 col-md">
+                <label for="reanrede" class="col-form-label fw-bold"
+                    >Anrede:</label
+                >
+                <select
+                    id="reanrede"
+                    name="reanrede"
+                    class="form-select"
+                    formControlName="reanrede"
+                >
+                    <option value="Herr">Herr</option>
+                    <option value="Frau">Frau</option>
+                    <option value="Divers">Divers</option>
+                </select>
+            </div>
+            <div class="m-1 col-md"></div>
+            <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+            <div class="m-1 col-md">
+                <label for="revorname" class="col-form-label fw-bold"
+                    >Vorname:</label
+                >
+                <input
+                    id="revorname"
+                    name="revorname"
+                    type="text"
+                    class="form-control"
+                    formControlName="revorname"
+                />
+            </div>
+            <div class="m-1 col-md">
+                <label for="renachname" class="col-form-label fw-bold"
+                    >Nachname:</label
+                >
+                <input
+                    id="renachname"
+                    name="renachname"
+                    type="text"
+                    class="form-control"
+                    formControlName="renachname"
+                />
+            </div>
+            <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+            <div class="m-1 col-md">
+                <label for="restrasse" class="col-form-label fw-bold"
+                    >Stra&szlig;e:</label
+                >
+                <input
+                    id="restrasse"
+                    name="restrasse"
+                    type="text"
+                    class="form-control"
+                    formControlName="restrasse"
+                />
+            </div>
+            <div class="m-1 col-md">
+                <label for="replz" class="col-form-label fw-bold">PLZ:</label>
+                <input
+                    id="replz"
+                    name="replz"
+                    type="text"
+                    class="form-control"
+                    formControlName="replz"
+                />
+            </div>
+            <div class="m-1 col-md">
+                <label for="reort" class="col-form-label fw-bold">Ort:</label>
+                <input
+                    id="reort"
+                    name="reort"
+                    type="text"
+                    class="form-control"
+                    formControlName="reort"
+                />
+            </div>
+        </div>
+        <div class="row">
+            <div class="m-1 col-md">
+                <label for="reland" class="col-form-label fw-bold">Land:</label>
+                <input
+                    id="reland"
+                    name="reland"
+                    type="text"
+                    class="form-control"
+                    formControlName="reland"
+                />
+            </div>
+            <div class="m-1 col-md"></div>
+            <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+            <div class="m-1 col-md">
+                <label for="remail" class="col-form-label fw-bold"
+                    >E-Mail:</label
+                >
+                <input
+                    id="remail"
+                    name="remail"
+                    type="text"
+                    class="form-control"
+                    formControlName="remail"
+                />
+            </div>
+            <div class="m-1 col-md"></div>
+            <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+            <div class="m-1 col-md">
+                <label for="retel" class="col-form-label fw-bold"
+                    >Telefonnummer:</label
+                >
+                <input
+                    id="retel"
+                    name="retel"
+                    type="text"
+                    class="form-control"
+                    formControlName="retel"
+                />
+            </div>
+            <div class="m-1 col-md"></div>
+            <div class="m-1 col-md"></div>
+        </div>
+        <div class="row">
+            <button
+                type="button"
+                class="col-md m-2 btn btn-secondary"
+                routerLink="/menu"
+            >
+                Zur&uuml;ck
+            </button>
+            <div class="col-md"></div>
+            <button type="submit" class="col-md m-2 btn btn-success">
+                Aktualisieren
+            </button>
+        </div>
+    </form>
+</div>
+-->

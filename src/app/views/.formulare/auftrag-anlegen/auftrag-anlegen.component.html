@@ -1,0 +1,29 @@
+<br>
+
+<div class="container-xl">
+  <div class="header">
+    <h3>
+      @if (baugruppe_neuer_auftrag) {
+        Neues Angebot anlegen
+      }@else if(auftrag_fortfahren){
+        Angebot anlegen
+      }
+    </h3>
+    @if(bereit){
+      @if(baugruppe_neuer_auftrag){
+        <mpl-navigation [neuer_auftrag]="true" [position]="0" [bgnr]="bgnr" [name]="bgnrkd"
+        ></mpl-navigation>
+      }@else if (auftrag_fortfahren) {
+        <mpl-navigation [auftrag_fortfahren]="true" [position]="0" [bgnr]="bgnr" [aunr]="aunr" [name]="bgnrkd"
+        ></mpl-navigation>
+      }
+    }@else{
+      <h6>
+        Es wird geladen.
+      </h6>
+    }
+
+    <mpl-ladebalken [falsches_laden_beginnen]="!bereit"></mpl-ladebalken>
+  </div>
+</div>
+    

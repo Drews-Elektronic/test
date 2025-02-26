@@ -1,1 +1,147 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+/* Sie können hier globale Styles hinzufügen und auch Styles aus Dateien Importieren */
+
+/* Importing Bootstrap SCSS file. */
+@import "bootstrap/scss/bootstrap";
+
+
+/* Importing PrimeNG SCSS files. */
+// Es wird in angular.json importiert
+//
+// PrimeNG Design wird durch @import "bootstrap/scss/bootstrap"; geändert.
+// Durch @import "bootstrap/scss/bootstrap"; erhalten Prime Componenten zusätzliche Paddings
+
+/* Farbpalette importieren */ // Aus einem unbekannten Grund können die Variablen nicht verwendet werden
+@import "./app/views/styles/_farbpallete.scss";
+
+/* Für die Komponente 'Fehlermeldungen' soll der Header versteckt sein */
+.header-verstecken, .verstecken {
+  display: none;
+}
+
+/* Globale Änderungen */
+// Es ermöglicht das Scrollen während ein Dialog geöffnet ist.
+body {
+  overflow-y: auto !important;
+}
+
+// Style vom Logo übernehmen
+h3, h3 *, .Audiowide { // Für Überschriften
+  font-family: 'Audiowide' !important;
+}
+* { // Für alle anderen Texte
+  font-family: 'Source Sans Pro';
+}
+
+.custom-button {
+  background-color: $erste_primary_farbe !important;
+  border-radius: 50%;
+  color: white !important;
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+/* Style für Bootstrap anpassen */
+.btn {
+  border: none;
+}
+
+.btn-success {
+  background: $btn_success_background_farbe; 
+  color: $btn_success_schrift_farbe;
+
+  &:hover {
+    background: $btn_success_background_farbe_75;
+  }
+}
+
+.btn-secondary {
+  background: $btn_secondary_background_farbe;
+  color: $btn_secondary_schrift_farbe;
+
+  &:hover {
+    background: $btn_secondary_background_farbe_75;
+  }
+}
+
+.btn-danger {
+  background: $btn_danger_background_farbe;
+  color: $btn_danger_schrift_farbe;
+
+  &:hover {
+    background: $btn_danger_background_farbe_75;
+  }
+}
+
+.link-icon {
+  color: black;
+  &:hover {
+    color: gray;
+  }
+}
+
+/* Style für Angular Material anpassen */
+.mat-mdc-snack-bar-container { // Die 'Snackbar' soll andere Farben verwenden
+  --mdc-snackbar-supporting-text-color: black;
+
+    &.notification-danger {
+      --mdc-snackbar-container-color: #f8d7da; /* Rot für Fehlermeldungen */
+    }
+    &.notification-success {
+      --mdc-snackbar-container-color: #d1e7dd; /* Grün für Erfolgsmeldungen */
+    }
+    &.notification-warning {
+      --mdc-snackbar-container-color: #fff3cd; /* Gelb für Warnugsmeldungen */
+    }
+}
+
+* {
+  @include mat.progress-bar-overrides((
+    active-indicator-color: $erste_primary_farbe,
+  )); 
+}
+
+.mat-mdc-progress-spinner circle {
+  stroke: rgb(0, 161, 170) !important;
+}
+
+// Damit in matTooltip '\n' verwenden kann!
+// Um Multiline zu verwenden:
+// [matTooltip]="'Test1: \nTest 2 \nTest 3'"
+// In <matTooltip> das Attribut 'matTooltipClass="my-tooltip"' einfügen
+.my-tooltip{
+  white-space: pre-line !important;
+}
+
+/* Style für PrimeNG anpassen */
+// Order
+@layer reset, primeng;
+
+// Reset CSS 
+@layer reset {
+  button,
+  input {
+    // CSS to Reset 
+  }
+
+  .p-button{
+    border-radius: 5px !important; // Entfernt abgerundete Ecken
+    
+    background: $btn_success_background_farbe !important; 
+    color: $btn_success_schrift_farbe !important;
+
+    border: none !important;
+
+    &:disabled {
+      opacity: 1 !important;
+    }
+
+    &:hover {
+      background: $btn_success_background_farbe_75 !important;
+    }
+  }
+}
+
