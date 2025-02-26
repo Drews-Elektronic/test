@@ -7,7 +7,7 @@ export const environment = {
 
     // Wenn MyProtoLab bereit für den Kunden ist, soll diese Funktion entfernt werden.
     // Dazu einfach STRG + Click auf die Variable 'keycloak_deaktivieren' und alle aufgezeigten Bereiche anpassen
-    keycloak_deaktivieren: false,
+    keycloak_deaktivieren: true,
 
     keycloak: {
         protocol: "http://",
