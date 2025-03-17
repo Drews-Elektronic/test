@@ -1,0 +1,7 @@
+@import "../../../styles/formular.scss";
+@import "../../../styles/fehler.scss";
+
+// Style fuer Leiterplattendaten
+.leiterplatten_daten > h5:not(:first-child) {
+  margin-top: 2rem;
+}

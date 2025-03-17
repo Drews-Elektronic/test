@@ -1,0 +1,14 @@
+<span matSnackBarLabel>
+  <div>
+    <h6 [class.kein-margin-bottom]="!data.todo"> {{ data.message }}! </h6>
+  </div>
+  <div *ngIf="data.todo">
+    <h6 class="kein-margin-bottom"> {{ data.todo }}. </h6>
+  </div>
+</span>
+<span matSnackBarActions>
+  <button class="btn btn-secondary" matSnackBarAction (click)="snackBarRef.dismissWithAction()"
+    style="display: flex; align-items: center;">
+    <mat-icon fontIcon="clear"></mat-icon>
+  </button>
+</span>

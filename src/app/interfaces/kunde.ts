@@ -1,0 +1,39 @@
+export interface Kunde {
+    kdnr: number;
+    firma?: string;
+    anrede?: string;
+    vorname?: string;
+    nachname?: string;
+    land?: string;
+    strasse?: string;
+    plz?: string;
+    ort?: string;
+    tel?: string;
+    mail?: string;
+    andereLieferadresse?: boolean;
+    lianrede?: string;
+    livorname?: string;
+    linachname?: string;
+    liland?: string;
+    listrasse?: string;
+    liplz?: string;
+    liort?: string;
+    litel?: string;
+    limail?: string;
+    andereRechnungsadresse?: boolean;
+    reanrede?: string;
+    revorname?: string;
+    renachname?: string;
+    reland?: string;
+    restrasse?: string;
+    replz?: string;
+    reort?: string;
+    retel?: string;
+    remail?: string;
+    versandart?: string;
+    rechnungsversand?: string;
+    sprache?: string;
+    waehrung?: string;
+    ustidnr?: string;
+}
+  

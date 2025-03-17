@@ -1,0 +1,113 @@
+<br>
+
+<div class="container-xl">
+  <div class="header">
+    <h3>Neue Baugruppe anlegen</h3>
+    <mpl-ladebalken [lade_status]="100"></mpl-ladebalken>
+  </div>
+
+  <br>
+
+  <form #anlageform="ngForm" (ngSubmit)="BaugruppeAnlegen()">
+    <div class="container-xxl box-anpassen">
+      <div class="row">
+        <label for="bezeichnung" class="form-label col-2">Bezeichnung</label>
+        <div class="col-2">
+          <input id="bezeichnung" name="bezeichnung" type="text" class="form-control form-select-sm"
+            [(ngModel)]="baugruppe.bgnrkd" />
+        </div>
+
+        <div class="col-4"></div>
+
+        <label for="bgrevisionkd" class="form-label col-2 align-right">Version</label>
+        <div class="col-2">
+          <input id="bgrevisionkd" name="bgrevisionkd" type="text" class="form-control form-select-sm"
+            [(ngModel)]="baugruppe.bgrevisionkd" />
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="beschreibung" class="form-label col-2">Beschreibung</label>
+        <div class="col">
+          <input id="beschreibung" name="beschreibung" type="text" class="form-control form-select-sm"
+            [(ngModel)]="baugruppe.bgbezeichnungkd" />
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="statuslp" class="form-label col-2">Leiterplatte Bearbeitungsstatus</label>
+        <div class="col-2">
+          <select id="statuslp" name="statuslp" class="form-select form-select-sm" [(ngModel)]="baugruppe.statuslp">
+            <option *ngFor="let x of statuslp" [value]="x.value" [selected]="x.selected"> {{x.name}} </option>
+          </select>
+        </div>
+
+        <div class="col-3"></div>
+
+        <label for="lpbtnrkd" class="form-label col-3 align-right">Leiterplatte Bauteilnummer</label>
+        <div class="col-2">
+          <select id="lpbtnrkd" name="lpbtnrkd" class="form-select form-select-sm" [(ngModel)]="baugruppe.lpbpknr">
+            <option *ngFor="let x of bauteile" [value]="x.bpknr"> {{x.btnrkd}} </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="statussl" class="form-label col-2">BOM Bearbeitungsstatus</label>
+        <div class="col-2">
+          <select id="statussl" name="statussl" class="form-select form-select-sm kompaktere-font-size"
+            [(ngModel)]="baugruppe.statussl">
+            <option *ngFor="let x of statussl" [value]="x.value" [selected]="x.selected"> {{x.name}} </option>
+          </select>
+        </div>
+
+        <div class="col-3"></div>
+
+        <label for="slpositionen" class="form-label col-3 align-right transparent">Anzahl BOM-Positionen</label>
+        <div class="col-2 align-right transparent">
+          <input id="slpositionen" name="slpositionen" type="text"
+            class="form-control form-select-sm kompakter-50 align-right" [(ngModel)]="baugruppe.slpositionen"
+            disabled />
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="anlagezeitpunkt" class="form-label col-2 transparent">Anlagezeitpunkt</label>
+
+        <div class="col-2 transparent">
+          <input id="anlagezeitpunkt" name="anlagezeitpunkt" type="text" class="form-control form-select-sm align-right"
+            [(ngModel)]="baugruppe.anlagezeitpunkt" disabled />
+        </div>
+
+        <div class="col-3"></div>
+
+        <label for="letzteaenderung" class="form-label col-3 align-right transparent">Letzte Änderung</label>
+        <div class="col-2 transparent">
+          <input id="letzteaenderung" name="letzteaenderung" type="text" class="form-control form-select-sm align-right"
+            [(ngModel)]="baugruppe.letzteaenderungzpkt" disabled />
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="bemerkung" class="form-label col-2">Bemerkung</label>
+        <div class="col">
+          <input id="bemerkung" name="bemerkung" type="text" class="form-control form-select-sm"
+            [(ngModel)]="baugruppe.bgbemerkungkd" />
+        </div>
+      </div>
+
+      <div></div>
+      <div class="row m-2 align-items-center">
+        <button type="button" class="btn btn-secondary col" routerLink="/baugruppen">
+          Abbrechen
+        </button>
+
+        <div class="col"></div>
+
+        <button type="submit" class="btn btn-success col">
+          Anlegen
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

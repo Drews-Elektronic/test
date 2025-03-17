@@ -1,0 +1,49 @@
+<br>
+<div class="container-xl">
+  <h3> My BOM </h3>
+  @if (bereit) {
+    <mpl-navigation [auftraege]="true" [position]="2" [bgnr]="bgnr" [aunr]="aunr" [name]="aunr"
+    ></mpl-navigation>
+  }@else {
+    Es wird geladen.
+  }
+  
+  <br>
+
+  <div class="sticky">
+    <mpl-ladebalken [falsches_laden_beginnen]="!(bereit && bereit_eine_verfuegbarkeit)" [lade_status]="prozent_fertig_gepruefte_bt"></mpl-ladebalken>
+  </div>
+
+  <mpl-bom-tabelle
+    [bereit]="bereit"
+    [bereit_alle_verfuegbarkeiten]="bereit_alle_verfuegbarkeiten"
+    [bereit_eine_verfuegbarkeit]="bereit_eine_verfuegbarkeit"
+    [erstes_coloum]="erstes_coloum_with_expand"
+    [zweites_coloum]="zweitescolumn_with_expand"
+    [tabellen_daten]="angebot_bom_daten"
+    [komprimiert]="true"
+    [top_teuersten_bauteile]="top_teuersten_bauteile"
+    [top_laengste_lieferzeit]="top_laengste_lieferzeit"
+    [baugruppenmenge]="menge"
+    [FormFields]="formFields"
+    (loesche_eines_event)="loescheStueckliste($event)"
+    (loesche_alles_event)="loescheStueckliste($event)"
+  ></mpl-bom-tabelle>
+
+  <mat-paginator [length]="angebot_bom_daten.data.length"
+    [pageSize]="25"
+    [pageSizeOptions]="[5, 10, 25, angebot_bom_daten.data.length]"
+    [ngClass]="{'verstecken': !bereit}">
+  </mat-paginator>
+
+  @if(bereit){
+    <div class="row margin_right_0 margin_left_0">
+      <mpl-pfeil-links class="col-auto" (click_event)="zurueck()"></mpl-pfeil-links>
+      
+      <div class="col"></div>
+    </div>
+  }
+  
+  <br>
+
+</div>

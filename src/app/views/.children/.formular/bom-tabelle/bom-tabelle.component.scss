@@ -1,0 +1,74 @@
+@import "../../../styles/_farbpallete.scss";
+@import "../../../styles/formular.scss";
+
+/// Für das Formular
+@media (min-width: 1300px) {
+  form:not(.mit-alternativem-bauteil) {
+      margin-left: 10%;
+      margin-right: 10%;
+  }
+}
+
+@media (min-width: 1500px) {
+  form:not(.mit-alternativem-bauteil) {
+      margin-left: 15%;
+      margin-right: 15%;
+  }
+}
+
+@media (min-width: 1600px) {
+  form:not(.mit-alternativem-bauteil) {
+      margin-left: 18%;
+      margin-right: 18%;
+  }
+}
+
+.mit-alternativem-bauteil  {
+  margin-left: 0%;
+  margin-right: 0%;
+
+  .box-anpassen {
+      margin-left: 0%;
+      margin-right: 0%;
+
+      background: linear-gradient(to right, $formular_hintergrund 50%, $formular_hintergrund_alternativ 50%) !important;
+  }
+}
+
+/// Angular Material Tabelle Spalten
+.mat-column-anzprobg,
+.mat-column-anzprobgkomp,
+.mat-column-elbez,
+.mat-column-elbezkomp{
+  width: 100px;
+  text-align: center;
+}
+
+.mat-column-bauteil_suchen{
+  width: 185px;
+  text-align: center;
+}
+
+.mat-column-agbskd,
+.mat-column-aglakd,
+.mat-column-aghakd,
+.mat-column-slbemerkungkd,
+.mat-column-expand{
+  width: 10px;
+}
+
+
+
+.mat-column-technDaten {
+  width: 100px;
+}
+
+.teuerste_bauteile{
+  border: 2px solid $erste_primary_farbe; 
+  border-radius: 50%; 
+}
+
+.laengste_lieferzeit{
+  border: 2px solid red; 
+  border-radius: 50%; 
+}

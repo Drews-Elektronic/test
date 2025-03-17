@@ -1,0 +1,6 @@
+export enum Beistellung {
+  BESCHAFFUNG = 0,
+  BEISTELLUNG = 1,
+  BEISTELLUNG_DURCH_FEHLER = 2,
+  NICHT_BESTUECKEN = 3,
+}

@@ -1,0 +1,165 @@
+<br>
+<div class="container-xl">
+    
+    <h3> 
+        My BOM ({{ selectedStueckliste.data.length }})
+    </h3>
+    @if(bereit && bgnrkd){
+        @if (neues_projekt) {
+            <mpl-navigation [neues_projekt]="true" [position]="3" [bgnr]="bgnr" 
+            ></mpl-navigation>
+        }@else if (neuer_auftrag) {
+            <mpl-navigation [neuer_auftrag]="true" [position]="2" [bgnr]="bgnr" [name]="bgnrkd"
+            ></mpl-navigation>
+        }@else{
+            <mpl-navigation [baugruppen]="true" [position]="1" [bgnr]="bgnr" [name]="bgnrkd"
+            ></mpl-navigation>
+        }
+    }@else{
+        <h6>
+            Es wird geladen.
+        </h6>
+    }
+
+    <div class="sticky">
+        <mpl-ladebalken [falsches_laden_beginnen]="!(bereit && bereit_eine_verfuegbarkeit) || falsches_laden" [lade_status]="prozent_fertig_gepruefte_bt"></mpl-ladebalken>
+
+        @if(bereit){
+            <div class="row" style="gap: 7px; margin-right: 0">
+                <!--
+                <label
+                    for="filterAll"
+                    class="form-label col-1"
+                    >Suchen</label
+                >
+                <div class="col-2 ">
+                    <input
+                        name="filterAll"
+                        type="text"
+                        class="form-control form-select-sm"
+                        (change)="applyFilter($event)"
+                        [(ngModel)]="filterAll"
+                    />
+                </div>
+                -->
+                <div class="col-1"></div>
+                <div class="col-2"></div>
+
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+        
+                <!--
+                <button
+                    type="button"
+                    class="btn btn-secondary col"
+                    (click)="loescheStueckliste($event)"
+                    [disabled]="selection.selected.length === 0"
+                >
+                    @if (selection.selected.length === 0 || selection.selected.length === 1) {
+                        Bauteil löschen
+                    }@else if (selection.selected.length > 1 && selection.selected.length !== selectedStueckliste.data.length) {
+                        {{selection.selected.length}} Bauteile löschen
+                    }@else{
+                        Alles löschen
+                    }
+                </button>
+                -->
+                <div class="col"></div>
+
+                <button 
+                    type="submit" 
+                    class="btn btn-secondary col" 
+                    (click)="alle_verfuegbarkeiten_pruefen()"
+                    [disabled] = "!(selectedStueckliste.data.length == 0 || !baugruppenmenge || bereit_alle_verfuegbarkeiten)"
+                >
+                    @if (bereit_alle_verfuegbarkeiten) {
+                        Verfügbarkeit prüfen
+                    }@else {
+                        Bitte warten
+                    }
+                </button>
+            </div>
+        }
+    </div>
+    
+    <mpl-bom-tabelle
+        [bereit]="bereit"
+        [bereit_alle_verfuegbarkeiten]="bereit_alle_verfuegbarkeiten"
+        [bereit_eine_verfuegbarkeit]="bereit_eine_verfuegbarkeit"
+        [erstes_coloum]="ErsteSelectedColoums"
+        [zweites_coloum]="ZweiteSelectedColoums"
+        [tabellen_daten]="selectedStueckliste"
+        [komprimiert]="komprimiert"
+        [top_teuersten_bauteile]="top_teuersten_bauteile"
+        [top_laengste_lieferzeit]="top_laengste_lieferzeit"
+        [baugruppenmenge]="baugruppenmenge"
+        [FormFields]="FormFields"
+        [alternative_loeschen]="true"
+        (loesche_eines_event)="loescheStueckliste($event)"
+        (loesche_alles_event)="loescheStueckliste($event)"
+        (alternative_suche_event)="alternative_suche($event)"
+        (Bauteil_als_beschaffen_umstellen_event)="Bauteil_als_beschaffen_umstellen($event)"
+        (Bauteil_als_beigestellt_umstellen_event)="Bauteil_als_beigestellt_umstellen($event)"
+        (Bauteil_als_nicht_bestuecken_umstellen_event)="Bauteil_als_nicht_bestuecken_umstellen($event)"
+
+        [eine_verfuegbarkeit]="true"
+        (eine_verfuegbarkeit_event)="eine_verfuegbarkeit_pruefen($event)"
+    ></mpl-bom-tabelle>
+
+    <mat-paginator 
+        [length]="selectedStueckliste.data.length"
+        [pageSize]="25"
+        [pageSizeOptions]="[5, 10, 25, selectedStueckliste.data.length]"
+        [ngClass]="{'verstecken': !bereit}">
+    </mat-paginator>
+
+    <br>
+
+    @if(bereit){
+        <div class="row margin_right_0 margin_left_0">
+            @if (neues_projekt || neuer_auftrag) {
+                <!--
+                <button
+                    type="button"
+                    class="btn btn-secondary col-2"
+                    (click)="zurueck()"
+                >Zurück</button>
+                -->
+                <mpl-pfeil-links class="col-auto" (click_event)="zurueck()"></mpl-pfeil-links>
+
+                <div class="col"></div>
+
+                <!--
+                <button
+                    type="button"
+                    class="btn btn-success col-2"
+                    (click)="weiter()"
+                    [disabled]="bitte_warten_weiter"
+                >
+                    @if(bitte_warten_weiter){
+                        Bitte warten ...
+                    }@else {
+                        Weiter
+                    }
+                </button>
+                -->
+                <mpl-pfeil-rechts class="col-auto" (click_event)="weiter()" [disabled]="bitte_warten_weiter"></mpl-pfeil-rechts>
+            }@else {
+                <!--
+                <button
+                    type="button"
+                    class="btn btn-secondary col-2"
+                    (click)="zurueck()"
+                >Zurück</button>
+                -->
+                
+                <mpl-pfeil-links class="col-auto" (click_event)="zurueck()"></mpl-pfeil-links>
+            }
+        </div>
+    }
+
+    <br>
+    
+
+</div>

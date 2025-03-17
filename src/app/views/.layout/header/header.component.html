@@ -1,0 +1,59 @@
+<!-- 
+    Wenn der Bildschirm zu klein wird, sollten alle Menü Punkte im Header zu einem Icon ersetzt werden.
+    Öffne einen Browser und besuche die Wordpress Seite von Drews. Verkleinere den Bildschirm bis das Menü im Header zu einem Icon ersetzt wurde. 
+ -->
+<!-- 
+  Diese Funktion ist nicht implementiert worden. Im "old-header-component" befindet sich HTML und TS Funktionen, die Teilweise übernommen werden können,
+  aber es muss noch einiges angepasst werden.
+-->
+<div class="container-xl hoehe_anpassen">
+
+  <div class="row d-flex align-items-center">
+    <div class="col-auto">
+      <a routerLink="/" class="custom-logo-link" rel="home">
+        <img style="height: 67.203px; width: 257px;" src="assets/neues_logo/logo_blau.png" alt="MyProtoLab">
+      </a>
+    </div>
+    <div class="col"></div>
+
+    <div class="col-auto">
+      <a routerLink="/baugruppen" class="Audiowide">Baugruppen</a>
+    </div>
+
+    <div class="col-auto">
+      <a routerLink="/bauteile" class="Audiowide">Bauteile</a>
+    </div>
+
+    <div class="col-auto">
+      <a routerLink="/projekte" class="Audiowide">Angebote</a>
+    </div>
+
+    <div class="col-auto">
+      <a routerLink="/projekte" class="Audiowide">Bestellungen</a>
+    </div>
+
+    
+    @if(!keycloak_deaktiviert){
+      <div class="col-auto">
+        <a class="clickable Audiowide" [matMenuTriggerFor]="menu"> {{ username }} </a>
+      </div>
+      
+      <mat-menu #menu="matMenu" style="height: 50px !important;">
+        <a (click)="kundendaten()">
+          <button mat-menu-item > <!-- (click)="personal_info()" -->
+            <span>Kundendaten</span>
+            <!--
+            <mat-icon iconPositionEnd>person</mat-icon>
+            -->
+          </button>
+        </a>
+        <button mat-menu-item (click)="logout()">
+          <span>Abmelden</span>
+          <!--
+          <mat-icon iconPositionEnd>logout</mat-icon>
+          -->
+        </button>
+      </mat-menu>
+    }
+  </div>
+</div>

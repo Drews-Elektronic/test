@@ -1,0 +1,37 @@
+<div style="margin: 25px">
+  <form style="margin-bottom: 0; padding: 5px; width: 380px;">
+    <mat-dialog-content style="padding: 2px;">
+      
+      <div class="container">
+        <div class="row" style="margin-bottom: 10px;">
+          <div class="col">
+            <h4>
+                Vielen Dank für ihre Bestellung!
+              <br>
+              <br>
+              Innerhalb von 24 Stunden erhalten Sie eine Bestätigung. 
+            </h4>
+          </div>
+        </div>
+      </div>
+      
+    </mat-dialog-content>
+
+    <div class="container">
+      <mat-dialog-actions class="row" > <!-- style="gap: 24px; padding: 2px;" -->
+
+        <div class="col"></div>
+
+        <button 
+          mat-icon-button
+          class="col-auto d-flex justify-content-center align-items-center custom-button"
+          (click)="umleiten_nach_bestellungen()"
+        >
+          <mat-icon style="color: white;">check</mat-icon> 
+        </button>
+
+        <div class="col"></div>
+      </mat-dialog-actions>
+    </div>
+  </form>
+</div>

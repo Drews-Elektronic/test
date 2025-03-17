@@ -1,0 +1,12 @@
+// Für Header und Footer
+.flex-wrapper {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+// Footer wird automatisch unten platziert.
+.footer {
+  margin-top: auto;
+}

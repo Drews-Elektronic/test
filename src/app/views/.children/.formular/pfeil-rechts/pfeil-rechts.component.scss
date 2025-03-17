@@ -1,0 +1,15 @@
+@import "../../../styles/_farbpallete.scss";
+
+.img-size {
+  width: 70px;  
+  height: 70px; 
+}
+
+.custom-button {
+  background-color: $erste_primary_farbe;
+  border-radius: 50%;
+}
+
+.custom-button:hover {
+  background-color: $zweite_primary_farbe; /* Darker color when hovered */
+}

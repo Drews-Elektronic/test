@@ -1,0 +1,11 @@
+@import "../../../styles/formular.scss";
+@import "../../../styles/fehler.scss";
+
+// Für das Formular
+@media (min-width: 1200px) {
+  form,
+  .header {
+    margin-left: 18%;
+    margin-right: 18%;
+  }
+}
