@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   protocol: "https://",
   homeUrl: "nice-bay-0da23dd03.4.azurestaticapps.net",
-  mplUrl: '/mpl',
+  mplUrl: '',
   apiUrl: 'main-php-test-myprotolab-c5hchncjguaue9c0.germanywestcentral-01.azurewebsites.net',
 
   keycloak_deaktivieren: false, // Nicht als true setzen
