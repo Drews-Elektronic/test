@@ -1,9 +1,0 @@
-<p-fileUpload #upload
-              [chooseLabel]="bitte_warten ? bitte_warten_label : label" 
-              [disabled]="bitte_warten"
-              chooseIcon="pi pi-upload"
-              mode="basic"
-              size="small"
-              [auto]="true"
-              [customUpload]="true" (uploadHandler)="upload_vorbereiten($event)"
-            />
