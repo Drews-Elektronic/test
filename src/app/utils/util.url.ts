@@ -5,7 +5,7 @@ export class UtilUrl {
 
   public static readonly login: string[] = ["login"]
 
-  public static readonly menu: string[] = ["menu"]
+  public static readonly menu: string[] = [""]
 
   public static readonly unberechtigt: string[] = ["unberechtigt"]
 

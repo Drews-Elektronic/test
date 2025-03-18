@@ -74,7 +74,7 @@ const routes: Routes = [
 
   { path: getRoute(UtilUrl.login), component: LoginComponent },
 
-  { path: getRoute(UtilUrl.menu), component: ViewMenuComponent, canActivate: [AuthGuard] },
+  { path: "", component: ViewMenuComponent, canActivate: [AuthGuard] },
 
   /****************************************************
    *** Ablauf, um einen Neuen Auftrag zu erstellen  ***
@@ -165,7 +165,7 @@ const routes: Routes = [
 
   { path: getRoute(UtilUrl.unberechtigt), component: UnberechtigtComponent, canActivate: [AuthGuard] },
 
-  { path: '**', redirectTo: getRoute(UtilUrl.menu) },
+  { path: '**', redirectTo: "" },
 ];
 
 @NgModule({
