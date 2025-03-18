@@ -3,7 +3,7 @@ export const environment = {
   protocol: "https://",
   homeUrl: "nice-bay-0da23dd03.4.azurestaticapps.net",
   mplUrl: '',
-  apiUrl: 'main-php-test-myprotolab-c5hchncjguaue9c0.germanywestcentral-01.azurewebsites.net',
+  apiUrl: 'php-myprotolab-hte7d7e6anfgatfu.germanywestcentral-01.azurewebsites.net',
 
   keycloak_deaktivieren: false, // Nicht als true setzen
   // Wenn MyProtoLab bereit für den Kunden ist, soll diese Funktion entfernt werden.
