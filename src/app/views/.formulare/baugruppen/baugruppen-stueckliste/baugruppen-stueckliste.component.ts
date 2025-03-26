@@ -126,7 +126,8 @@ export class BaugruppenStuecklisteComponent implements OnInit {
                         }
                         */
 
-                        this.alle_verfuegbarkeiten_pruefen();
+                        //this.alle_verfuegbarkeiten_pruefen();
+                        this.alle_verfuegbarkeiten_pruefen_in_10er_schritte()
                     }
                 })
             }else{
