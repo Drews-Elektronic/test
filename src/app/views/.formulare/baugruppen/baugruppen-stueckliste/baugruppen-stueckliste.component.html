@@ -70,7 +70,7 @@
                 <button 
                     type="submit" 
                     class="btn btn-secondary col" 
-                    (click)="alle_verfuegbarkeiten_pruefen()"
+                    (click)="alle_verfuegbarkeiten_pruefen_in_10er_schritte()"
                     [disabled] = "!(selectedStueckliste.data.length == 0 || !baugruppenmenge || bereit_alle_verfuegbarkeiten)"
                 >
                     @if (bereit_alle_verfuegbarkeiten) {

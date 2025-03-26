@@ -1,17 +1,15 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute, RouteConfigLoadEnd } from '@angular/router';
-import { filter, take, tap, timeout } from 'rxjs';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { filter, take } from 'rxjs';
 
 import { BackendService } from 'src/app/services/backend.service';
 import { getTrigger } from 'src/app/services/table.service'
 
-import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 
 import { DialogComponent } from 'src/app/views/.children/dialog/dialog.component';
-import { AlternativesBauteilBearbeitenComponent } from 'src/app/views/.children/alternatives-bauteil-bearbeiten/alternatives-bauteil-bearbeiten.component';
 
 import { UtilFormular } from 'src/app/utils/util.formular';
 import { UtilDialog } from 'src/app/utils/util.dialog';
@@ -126,8 +124,7 @@ export class BaugruppenStuecklisteComponent implements OnInit {
                         }
                         */
 
-                        //this.alle_verfuegbarkeiten_pruefen();
-                        this.alle_verfuegbarkeiten_pruefen_in_10er_schritte()
+                        this.alle_verfuegbarkeiten_schrittweise_durch_gehen_pruefen();
                     }
                 })
             }else{
@@ -321,7 +318,66 @@ export class BaugruppenStuecklisteComponent implements OnInit {
     }
     //#endregion
     //#region Verfügbarkeit
-    async alle_verfuegbarkeiten_pruefen(){
+    async alle_verfuegbarkeiten_schrittweise_durch_gehen_pruefen(){
+        return new Promise((resolve, reject)=>{
+            // Top Bauteile zurücksetzen
+            this.top_teuersten_bauteile = [];
+            this.top_laengste_lieferzeit = [];
+
+            // Buttons deaktivieren
+            this.bereit_alle_verfuegbarkeiten = false;
+            
+            // breche vorherige Verfügbarkeits Prüfung ab
+            if(this.abbrechen.length > 0){
+                this.abbrechen.forEach((abort: AbortController) => abort.abort())
+            }
+            this.abbrechen = []
+
+            const abort = new AbortController()
+            this.abbrechen.push(abort)
+            const signal = abort.signal;
+
+            // Wechsle zum Komprimierten Ansicht
+            if(this.radiobutton_komp?.checked){
+                this.radiobutton_komp.checked = true
+            }
+            this.onRadioChange({value: "slkomp"})
+
+            if(this.selectedStueckliste.data.length > 0){
+                
+
+                let subscription = this.backend.verfuegbarkeitZuruecksetzen("bgnr", this.bgnr, true).subscribe(async (value) => {
+                    subscription.unsubscribe();
+
+                    if(value !== false){
+                        // Verfügbarkeit in der dataSource auf 0 setzen
+                        this.KomprimiertStueckliste.data.forEach((element: any) => {
+                            element.maxlbverfuegbar = QuellenStatus.NICHT_GEPRUEFT;
+                        });
+                        this.OriginalStueckliste.data.forEach((element: any) => {
+                            element.maxlbverfuegbar = QuellenStatus.NICHT_GEPRUEFT;
+                        });
+                        this.KomprimiertStueckliste._updateChangeSubscription();
+                        this.OriginalStueckliste._updateChangeSubscription();
+                        
+                        // Verfügbarkeits Prüfung beginnen
+                        for(let bauteil of this.selectedStueckliste.data){
+                            await this.verfuegbarkeit_pruefen(bauteil, true, false);
+                        }
+
+                        this.bereit_alle_verfuegbarkeiten = true
+
+                        // Wenn alle Bauteile durchgegangen sind, sollen die Daten weiter verarbeiten und wichtige Informationen entnehmen werden
+                        this.BauteileFiltern();
+                    }
+                });
+            }
+
+        })
+    }
+
+    //#region Verfügbarkeit
+    async alle_verfuegbarkeiten_pruefen(){ // (Fehlerhaft, Distributor-Api schafft es nicht viele Bauteile gleichzeitig abzufragen, weshalb die Bauteile nacheinander durchgegangen werden sollen.)
         return new Promise((resolve, reject)=>{
             
 
@@ -399,6 +455,9 @@ export class BaugruppenStuecklisteComponent implements OnInit {
                                         this.KomprimiertStueckliste._updateChangeSubscription();
                                         this.selectedStueckliste._updateChangeSubscription();
 
+                                        // Wenn alle Bauteile durchgegangen sind, sollen die Daten weiter verarbeiten und wichtige Informationen entnehmen werden
+                                        this.BauteileFiltern();
+
                                         resolve(true)
                                     }, (error: any)=>{
                                         this.falsches_laden = false
@@ -415,9 +474,6 @@ export class BaugruppenStuecklisteComponent implements OnInit {
                                         resolve(false)
                                     });
                             });
-
-                        // Wenn alle Bauteile durchgegangen sind, sollen die Daten weiter verarbeiten und wichtige Informationen entnehmen werden
-                        this.BauteileFiltern();
                     }
                 });
             }
